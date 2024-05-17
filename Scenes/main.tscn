@@ -10,23 +10,26 @@ script/source = "extends Camera2D
 const MAP_SIZE = Vector2(1024, 1024)  # Map size in pixels
 const PAN_SPEED = 200  # Speed of camera panning
 
+var dragging = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Center the camera at the beginning
 	position = MAP_SIZE / 2
+	_bind_inputs()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var move_vector = Vector2.ZERO
 
-	# Capture keyboard input for panning
-	if Input.is_action_pressed(\"ui_left\"):
+	# Capture keyboard input for panning (WASD keys)
+	if Input.is_action_pressed(\"move_left\"):
 		move_vector.x -= PAN_SPEED * delta
-	if Input.is_action_pressed(\"ui_right\"):
+	if Input.is_action_pressed(\"move_right\"):
 		move_vector.x += PAN_SPEED * delta
-	if Input.is_action_pressed(\"ui_up\"):
+	if Input.is_action_pressed(\"move_up\"):
 		move_vector.y -= PAN_SPEED * delta
-	if Input.is_action_pressed(\"ui_down\"):
+	if Input.is_action_pressed(\"move_down\"):
 		move_vector.y += PAN_SPEED * delta
 
 	# Calculate the new position
@@ -41,6 +44,43 @@ func _process(delta):
 
 	# Set the new position
 	position = new_position
+
+# Input handling for dragging with middle mouse button
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			if event.is_pressed():
+				dragging = true
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			else:
+				dragging = false
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	elif event is InputEventMouseMotion and dragging:
+		# Use relative motion for dragging to avoid shakiness
+		position -= event.relative / zoom
+
+# Bind the new input actions in the Input Map
+func _bind_inputs():
+	InputMap.add_action(\"move_left\")
+	InputMap.add_action(\"move_right\")
+	InputMap.add_action(\"move_up\")
+	InputMap.add_action(\"move_down\")
+
+	var input_event_left = InputEventKey.new()
+	input_event_left.keycode = KEY_A
+	InputMap.action_add_event(\"move_left\", input_event_left)
+
+	var input_event_right = InputEventKey.new()
+	input_event_right.keycode = KEY_D
+	InputMap.action_add_event(\"move_right\", input_event_right)
+
+	var input_event_up = InputEventKey.new()
+	input_event_up.keycode = KEY_W
+	InputMap.action_add_event(\"move_up\", input_event_up)
+
+	var input_event_down = InputEventKey.new()
+	input_event_down.keycode = KEY_S
+	InputMap.action_add_event(\"move_down\", input_event_down)
 "
 
 [node name="Main" type="Node2D"]

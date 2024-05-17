@@ -21,7 +21,6 @@ func _on_tilemap_source_ready():
 	tilemap_display.tile_set = tilemap_source.tile_set
 
 	# Copy all the tiles from the source to the display TileMap
-	print(tilemap_source.get_used_cells(0))
 	for cell in tilemap_source.get_used_cells(0):
 		var tile_id = tilemap_source.get_cell_source_id(0, cell)
 		var atlas_coords = tilemap_source.get_cell_atlas_coords(0, cell)
@@ -89,31 +88,45 @@ func _ready():
 		print(\"Failed to load image: \", error)
 		return
 
+	# Ensure the image is in the correct format
+	image.convert(Image.FORMAT_RGBA8)
+	
 	# Get the size of the image
 	var width = image.get_width()
 	var height = image.get_height()
-
+	print(\"Image dimensions: \", width, \"x\", height)
+	
 	# Print used cells before modification
-	print(\"Before modification: \", get_used_cells(0))
-
+	var used_cells = get_used_cells(0)
+	
+	# Get cell size for coordinate transformation
+	var cell_size = Vector2(64, 32)  # Assuming 64x32 isometric tiles, adjust as necessary
+	
 	# Iterate through each used cell in the TileMap
-	for cell in get_used_cells(0):
-		var x = cell.x
-		var y = cell.y
+	for cell in used_cells:
+		var world_coords = map_to_local(cell) + cell_size / 2
+		var image_x = world_coords.x
+		var image_y = world_coords.y
 
 		# Make sure the coordinates are within the image bounds
-		if x < width and y < height:
-			var color = image.get_pixel(x, y)
+		if image_x >= 0 and image_x < width and image_y >= 0 and image_y < height:
+			var color = image.get_pixel(image_x, image_y)
+			
+			# Print the color value for debugging
+			print(\"Pixel color at (\", image_x, \",\", image_y, \"): \", color)
+			
 			var tile_id = TILE_PASSABLE
 			if color.r > 0.5 and color.a > 0.5:  # Check if the pixel is red and not transparent
 				tile_id = TILE_IMPASSABLE
-
+				
+				# Print debug information
+				print(\"Red found. Setting cell: (\", cell.x, \",\", cell.y, \") to tile ID: \", tile_id)
+			
 			# Set the tile in the TileMap
-			set_cell(0, cell, tile_id)
-
-	# Print used cells after modification
-	print(\"After modification: \", get_used_cells(0))
-
+			set_cell(0, cell, tile_id, Vector2i(0, 0), 0)
+		else:
+			print(\"Coordinates out of bounds: (\", image_x, \",\", image_y, \")\")
+	
 	# Defer the signal emission to ensure it occurs after the scene tree is fully ready
 	call_deferred(\"emit_signal\", \"tilemap_ready\")
 "

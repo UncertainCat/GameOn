@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://d4fostvgqitvv"]
+
+[ext_resource type="PackedScene" uid="uid://ce1dc8k83qi1v" path="res://Scenes/test_map.tscn" id="1_unstd"]
+
+[sub_resource type="GDScript" id="GDScript_t3v8n"]
+resource_name = "CameraController"
+script/source = "extends Camera2D
+
+# Constants
+const MAP_SIZE = Vector2(1024, 1024)  # Map size in pixels
+const PAN_SPEED = 200  # Speed of camera panning
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	# Center the camera at the beginning
+	position = MAP_SIZE / 2
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	var move_vector = Vector2.ZERO
+
+	# Capture keyboard input for panning
+	if Input.is_action_pressed(\"ui_left\"):
+		move_vector.x -= PAN_SPEED * delta
+	if Input.is_action_pressed(\"ui_right\"):
+		move_vector.x += PAN_SPEED * delta
+	if Input.is_action_pressed(\"ui_up\"):
+		move_vector.y -= PAN_SPEED * delta
+	if Input.is_action_pressed(\"ui_down\"):
+		move_vector.y += PAN_SPEED * delta
+
+	# Calculate the new position
+	var new_position = position + move_vector
+
+	# Get the viewport size adjusted for zoom
+	var viewport_size = get_viewport_rect().size / zoom
+
+	# Clamp the new position to stay within the map boundaries
+	new_position.x = clamp(new_position.x, viewport_size.x / 2, MAP_SIZE.x - viewport_size.x / 2)
+	new_position.y = clamp(new_position.y, viewport_size.y / 2, MAP_SIZE.y - viewport_size.y / 2)
+
+	# Set the new position
+	position = new_position
+"
+
+[node name="Main" type="Node2D"]
+
+[node name="map" parent="." instance=ExtResource("1_unstd")]
+z_index = -2
+z_as_relative = false
+
+[node name="PlayerCam" type="Camera2D" parent="."]
+z_index = 20
+zoom = Vector2(4, 4)
+script = SubResource("GDScript_t3v8n")

@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dtjhm00f2av2t"]
+
+[ext_resource type="Shader" path="res://Resources/visibility_shader.gdshader" id="1_m5750"]
+
+[resource]
+shader = ExtResource("1_m5750")

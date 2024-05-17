@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://r6ax4v5r7y8r"]
+
+[ext_resource type="Texture2D" uid="uid://yjevajol2va6" path="res://Assets/icon.svg" id="1_mip2n"]
+
+[node name="Actor" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.171875, 0.171875)
+texture = ExtResource("1_mip2n")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]

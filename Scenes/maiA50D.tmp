@@ -1,25 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4fostvgqitvv"]
+[gd_scene load_steps=4 format=3 uid="uid://d4fostvgqitvv"]
 
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
-[ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor.tscn" id="2_a8tnq"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]
 script/source = "extends Node2D
 
-@onready var battle_map: BattleMap = $ExampleMap
-@onready var actor: Actor = $Actor
+@onready var battle_map: BattleMap = $BattleMap
 
 func _ready():
+	# Create an example PC (replace with your actual PC class)
+	var actor_scene = new(Actor())
 	
 	# Initialize the actor with the battle map
-	actor.assign(battle_map)
+	actor._init(battle_map)
 	actor.name = \"PC1\"
+	
+	# Add the PC as a child of the battle map
+	battle_map.add_child(actor)
 	
 	# Start the combat with this single actor as the PC
 	combat_manager.start_combat(battle_map, [actor], [])
 	
 	# Log the actor's initial position
-	print(\"Actor spawned at position: %s\" % actor.global_position)
+	print(\"Actor spawned at position: %s\" % actor.position)
 "
 
 [sub_resource type="GDScript" id="GDScript_t3v8n"]
@@ -112,5 +115,3 @@ zoom = Vector2(4, 4)
 script = SubResource("GDScript_t3v8n")
 
 [node name="ExampleMap" parent="." instance=ExtResource("1_gbcc2")]
-
-[node name="Actor" parent="." instance=ExtResource("2_a8tnq")]

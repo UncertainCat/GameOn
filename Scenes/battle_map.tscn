@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://ce1dc8k83qi1v"]
+
+[ext_resource type="Script" path="res://Scripts/battle_map.gd" id="1_eb2q4"]
+[ext_resource type="Texture2D" uid="uid://bbnysnp8t61yx" path="res://Assets/ExampleMap/uncertaincat_isometric_dark_fantasy_battle_map_06fc2936-6805-4117-b75b-3f18dd78d2f7.png" id="2_1g5qs"]
+[ext_resource type="PackedScene" uid="uid://bponb8fyxbekl" path="res://Scenes/Maps/ExampleMap/tile_map_source.tscn" id="3_hblgq"]
+
+[node name="battle_map" type="Node2D"]
+script = ExtResource("1_eb2q4")
+
+[node name="UncertaincatIsometricDarkFantasyBattleMap06Fc2936-6805-4117-b75b-3f18Dd78d2f7" type="Sprite2D" parent="."]
+texture = ExtResource("2_1g5qs")
+centered = false
+
+[node name="TileMapSource" parent="." instance=ExtResource("3_hblgq")]

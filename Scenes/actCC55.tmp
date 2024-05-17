@@ -1,7 +1,50 @@
 [gd_scene load_steps=11 format=3 uid="uid://r6ax4v5r7y8r"]
 
-[ext_resource type="Script" path="res://Scripts/actor.gd" id="1_4l3su"]
 [ext_resource type="Texture2D" uid="uid://bwagw0ey0v2lk" path="res://Assets/RpgDungeon/chara_hero.png" id="1_o8ug5"]
+
+[sub_resource type="GDScript" id="GDScript_fty14"]
+script/source = "extends Node2D
+
+class_name Player
+
+var target_grid_position = Vector2i()
+var speed = 200
+var id = 1
+
+@onready var sprite = $AnimatedSprite2D  # Reference to the AnimatedSprite
+@onready var event_bus = EventBus  # Reference to the EventBus singleton
+@onready var game_map = get_parent() as BattleMap  # Get the parent node and cast it to Map
+
+func _ready():
+	sprite.play(\"idle\")  # Start with idle animation
+
+func _process(delta):
+	if game_map:
+		var target_position = game_map.to_world(target_grid_position)
+		if global_position != target_position:
+			var direction = (target_position - global_position).normalized()
+			print(\"Current Position: %s, Target Position: %s\" % [global_position, target_position])
+			global_position += direction * speed * delta
+			if global_position.distance_to(target_position) < speed * delta:
+				global_position = target_position
+				sprite.play(\"idle\")  # Play idle animation when the player reaches the target
+				print(\"Player reached target position, completing event\")
+				var event = Event.new(\"move_completed\", id)
+				event_bus.complete_event(event)
+			else:
+				sprite.play(\"walk_right\")  # Play walk animation while the player is moving
+		else:
+			sprite.play(\"idle\")  # Ensure the player is idle when not moving
+
+func move_to_grid_position(new_grid_position: Vector2i):
+	target_grid_position = new_grid_position
+	print(\"Moving to new grid position: %s\" % target_grid_position)
+
+func handle_event(event: Event):
+	if event.type == \"move_player\":
+		print(\"Player received move_player event\")
+		move_to_grid_position(event.data.position)
+"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_u8aw6"]
 atlas = ExtResource("1_o8ug5")
@@ -66,7 +109,7 @@ animations = [{
 }]
 
 [node name="Actor" type="Node2D"]
-script = ExtResource("1_4l3su")
+script = SubResource("GDScript_fty14")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_1wvdm")

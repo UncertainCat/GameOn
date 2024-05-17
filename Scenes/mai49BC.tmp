@@ -1,0 +1,116 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4fostvgqitvv"]
+
+[ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
+[ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor.tscn" id="2_a8tnq"]
+
+[sub_resource type="GDScript" id="GDScript_srgsc"]
+script/source = "extends Node2D
+
+@onready var battle_map: BattleMap = $ExampleMap
+@onready var actor: Actor = $Actor
+
+func _ready():
+	
+	# Initialize the actor with the battle map
+	actor.assign(battle_map)
+	actor.name = \"PC1\"
+	
+	# Start the combat with this single actor as the PC
+	combat_manager.start_combat(battle_map, [actor], [])
+	
+	# Log the actor's initial position
+	print(\"Actor spawned at position: %s\" % actor.global_position)
+"
+
+[sub_resource type="GDScript" id="GDScript_t3v8n"]
+resource_name = "CameraController"
+script/source = "extends Camera2D
+
+# Constants
+const MAP_SIZE = Vector2(1024, 1024)  # Map size in pixels
+const PAN_SPEED = 200  # Speed of camera panning
+
+var dragging = false
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	# Center the camera at the beginning
+	position = MAP_SIZE / 2
+	_bind_inputs()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	var move_vector = Vector2.ZERO
+
+	# Capture keyboard input for panning (WASD keys)
+	if Input.is_action_pressed(\"move_left\"):
+		move_vector.x -= PAN_SPEED * delta
+	if Input.is_action_pressed(\"move_right\"):
+		move_vector.x += PAN_SPEED * delta
+	if Input.is_action_pressed(\"move_up\"):
+		move_vector.y -= PAN_SPEED * delta
+	if Input.is_action_pressed(\"move_down\"):
+		move_vector.y += PAN_SPEED * delta
+
+	# Calculate the new position
+	var new_position = position + move_vector
+
+	# Get the viewport size adjusted for zoom
+	var viewport_size = get_viewport_rect().size / zoom
+
+	# Clamp the new position to stay within the map boundaries
+	new_position.x = clamp(new_position.x, viewport_size.x / 2, MAP_SIZE.x - viewport_size.x / 2)
+	new_position.y = clamp(new_position.y, viewport_size.y / 2, MAP_SIZE.y - viewport_size.y / 2)
+
+	# Set the new position
+	position = new_position
+
+# Input handling for dragging with middle mouse button
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			if event.is_pressed():
+				dragging = true
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			else:
+				dragging = false
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	elif event is InputEventMouseMotion and dragging:
+		# Use relative motion for dragging to avoid shakiness
+		position -= event.relative / zoom
+
+# Bind the new input actions in the Input Map
+func _bind_inputs():
+	InputMap.add_action(\"move_left\")
+	InputMap.add_action(\"move_right\")
+	InputMap.add_action(\"move_up\")
+	InputMap.add_action(\"move_down\")
+
+	var input_event_left = InputEventKey.new()
+	input_event_left.keycode = KEY_A
+	InputMap.action_add_event(\"move_left\", input_event_left)
+
+	var input_event_right = InputEventKey.new()
+	input_event_right.keycode = KEY_D
+	InputMap.action_add_event(\"move_right\", input_event_right)
+
+	var input_event_up = InputEventKey.new()
+	input_event_up.keycode = KEY_W
+	InputMap.action_add_event(\"move_up\", input_event_up)
+
+	var input_event_down = InputEventKey.new()
+	input_event_down.keycode = KEY_S
+	InputMap.action_add_event(\"move_down\", input_event_down)
+"
+
+[node name="Main" type="Node2D"]
+script = SubResource("GDScript_srgsc")
+
+[node name="PlayerCam" type="Camera2D" parent="."]
+z_index = 20
+zoom = Vector2(4, 4)
+script = SubResource("GDScript_t3v8n")
+
+[node name="ExampleMap" parent="." instance=ExtResource("1_gbcc2")]
+
+[node name="Actor" parent="." instance=ExtResource("2_a8tnq")]

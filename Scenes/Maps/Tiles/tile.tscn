@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://bl2i8ie5c5w1e"]
+
+[ext_resource type="Texture2D" uid="uid://ndt6hdmtjsks" path="res://Assets/simple_iso_square.png" id="1_mxjkh"]
+
+[sub_resource type="GDScript" id="GDScript_7q4ym"]
+script/source = "extends Sprite2D
+
+@export var normal_texture: Texture2D
+@export var impassable_texture: Texture2D
+
+var is_impassable = false
+
+func _ready():
+	set_opacity(1.0)
+	set_normal()
+
+func set_impassable():
+	texture = impassable_texture
+	is_impassable = true
+
+func set_normal():
+	texture = normal_texture
+	is_impassable = false
+
+func set_opacity(opacity: float):
+	modulate.a = opacity
+
+func fade_out():
+	var tween = create_tween()
+	tween.tween_property(self, \"modulate:a\", 0.0, 2.0).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
+
+func fade_in():
+	var tween = create_tween()
+	tween.tween_property(self, \"modulate:a\", 1.0, 0.5).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
+"
+
+[node name="Tile" type="Sprite2D"]
+script = SubResource("GDScript_7q4ym")
+normal_texture = ExtResource("1_mxjkh")
+impassable_texture = ExtResource("1_mxjkh")

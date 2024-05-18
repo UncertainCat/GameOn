@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://ibha1ee5qrhy"
+path="res://.godot/imported/terrain_key.png-c463afc518680fe46c5152a29bea7e14.image"
+
+[deps]
+
+source_file="res://Assets/ExampleMap/terrain_key.png"
+dest_files=["res://.godot/imported/terrain_key.png-c463afc518680fe46c5152a29bea7e14.image"]
+
+[params]
+

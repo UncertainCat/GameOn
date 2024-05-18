@@ -68,7 +68,6 @@ func _process(_delta):
 
 	_fade_out_tiles()
 
-
 func snap_in_tiles(cell: Vector2i, opacity: float):
 	if not tiles.has(cell):
 		var tile = tile_scene.instantiate() as Sprite2D
@@ -85,7 +84,7 @@ func _fade_out_tiles():
 		if tile.modulate.a > 0:
 			tile.fade_out()
 
-func _on_gui_input(event):
+func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var mouse_pos: Vector2 = tilemap_source.get_global_mouse_position()
 		var cell: Vector2i = tilemap_source.local_to_map(tilemap_source.to_local(mouse_pos))

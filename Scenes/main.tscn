@@ -66,15 +66,14 @@ func _process(delta):
 	position = new_position
 
 # Input handling for dragging with middle mouse button
-func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_MIDDLE:
-			if event.is_pressed():
-				dragging = true
-				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			else:
-				dragging = false
-				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+func _unhandled_input(event):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
+		if event.is_pressed():
+			dragging = true
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		else:
+			dragging = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	elif event is InputEventMouseMotion and dragging:
 		# Use relative motion for dragging to avoid shakiness
 		position -= event.relative / zoom
@@ -87,19 +86,19 @@ func _bind_inputs():
 	InputMap.add_action(\"move_down\")
 
 	var input_event_left = InputEventKey.new()
-	input_event_left.keycode = KEY_A
+	input_event_left.physical_keycode = KEY_A
 	InputMap.action_add_event(\"move_left\", input_event_left)
 
 	var input_event_right = InputEventKey.new()
-	input_event_right.keycode = KEY_D
+	input_event_right.physical_keycode = KEY_D
 	InputMap.action_add_event(\"move_right\", input_event_right)
 
 	var input_event_up = InputEventKey.new()
-	input_event_up.keycode = KEY_W
+	input_event_up.physical_keycode = KEY_W
 	InputMap.action_add_event(\"move_up\", input_event_up)
 
 	var input_event_down = InputEventKey.new()
-	input_event_down.keycode = KEY_S
+	input_event_down.physical_keycode = KEY_S
 	InputMap.action_add_event(\"move_down\", input_event_down)
 "
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://dfl2ipi1d8ha4"]
 
 [ext_resource type="Script" path="res://Scripts/battle_map.gd" id="1_6lf3y"]
-[ext_resource type="Texture2D" uid="uid://ndt6hdmtjsks" path="res://Assets/simple_iso_square.png" id="2_wsh3c"]
+[ext_resource type="Texture2D" uid="uid://ndt6hdmtjsks" path="res://Assets/Graphics/simple_iso_square.png" id="2_wsh3c"]
 [ext_resource type="Script" path="res://Scripts/tile_map_loader.gd" id="3_jcdyq"]
 [ext_resource type="Texture2D" uid="uid://bbnysnp8t61yx" path="res://Assets/ExampleMap/uncertaincat_isometric_dark_fantasy_battle_map_06fc2936-6805-4117-b75b-3f18dd78d2f7.png" id="5_vctdu"]
 
@@ -19,6 +19,7 @@ texture_region_size = Vector2i(64, 32)
 
 [sub_resource type="TileSet" id="TileSet_xpvbv"]
 tile_shape = 1
+tile_layout = 4
 tile_size = Vector2i(64, 32)
 sources/0 = SubResource("TileSetAtlasSource_v5hsh")
 sources/1 = SubResource("TileSetAtlasSource_2ck8l")

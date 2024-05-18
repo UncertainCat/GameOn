@@ -2,13 +2,15 @@ extends Node2D
 
 class_name BattleMap
 
-# Exported variables
-@onready var tilemap_source = $TileMapSource
+# Onready variables
+@onready var tilemap_source: TileMap = $TileMapSource
+@onready var tile_scene: PackedScene = preload("res://Scenes/Maps/Tiles/tile.tscn")
 
-# Internal TileMap for display
-var tilemap_display: TileMap
-
+# Signal
 signal tile_clicked(cell_position: Vector2i)
+
+var tiles = {}
+var tile_size = Vector2()
 
 # Custom spawn point types
 class SpawnPoint:
@@ -33,64 +35,63 @@ class SpawnPoints:
 		npc_spawn_points = npc_points
 
 func _ready():
-	# Create and attach the tilemap_display
-	tilemap_display = TileMap.new()
-	add_child(tilemap_display)
+	if tile_scene == null:
+		push_error("tile_scene is not assigned. Please assign a PackedScene to tile_scene.")
+		return
 
-	# Set up the tilemaps
-	_setup_tilemap_source()
+	var tile_instance = tile_scene.instantiate() as Sprite2D
+	if tile_instance.texture:
+		tile_size = tile_instance.texture.get_size()
 
-	# Connect the mouse input event
-	tilemap_display.connect("gui_input", Callable(self, "_on_gui_input"))
+	set_process(true)
 
-func _setup_tilemap_source():
-	if tilemap_source != null:
-		tilemap_source.visible = false
-		tilemap_source.connect("ready", Callable(self, "_on_tilemap_source_ready"))
+func get_adjacent_cells(cell: Vector2i) -> Array[Vector2i]:
+	var adjacents: Array[Vector2i] = []
+	adjacents.append(Vector2i(cell.x - 1, cell.y))      # Top-left
+	adjacents.append(Vector2i(cell.x, cell.y - 1))      # Top-right
+	adjacents.append(Vector2i(cell.x, cell.y + 1))      # Bottom-left
+	adjacents.append(Vector2i(cell.x + 1, cell.y))      # Bottom-right
+	return adjacents
+
+func _process(_delta):
+	if tile_scene == null:
+		return  # Prevent further execution if tile_scene is null
+
+	var mouse_pos = get_global_mouse_position()
+	var cell = tilemap_source.local_to_map(mouse_pos)
+	snap_in_tiles(cell, 1.0)  # Snap in the hovered tile with full opacity
+
+	# Get adjacent cells for an isometric grid
+	var adjacent_cells: Array[Vector2i] = get_adjacent_cells(cell)
+	for adj_cell in adjacent_cells:
+		snap_in_tiles(adj_cell, 0.15)  # Snap in adjacent tiles with 0.75 opacity
+
+	_fade_out_tiles()
+
+
+func snap_in_tiles(cell: Vector2i, opacity: float):
+	if not tiles.has(cell):
+		var tile = tile_scene.instantiate() as Sprite2D
+		tile.position = tilemap_source.map_to_local(cell)
+		add_child(tile)
+		tiles[cell] = tile
+		tile.snap_in(opacity)
 	else:
-		push_error("tilemap_source is null in _setup_tilemap_source!")
+		var tile = tiles[cell]
+		tile.snap_in(opacity)
 
-func _on_tilemap_source_ready():
-	if tilemap_source != null and tilemap_display != null:
-		tilemap_display.tile_set = tilemap_source.tile_set
-		tilemap_display.tile_origin = tilemap_source.tile
-		tilemap_display.cell_size = tilemap_source.cell_size
-		tilemap_display.mode = TileMap.MODE_SQUARE
-		_sync_tilemaps()
-	else:
-		push_error("tilemap_source or tilemap_display is null in _on_tilemap_source_ready!")
-
-func _sync_tilemaps():
-	if tilemap_source != null and tilemap_display != null:
-		for cell in tilemap_source.get_used_cells(0):
-			var tile_id = tilemap_source.get_cell(0, cell)
-			tilemap_display.set_cell(0, cell, tile_id)
-	else:
-		push_error("tilemap_source or tilemap_display is null in _sync_tilemaps!")
+func _fade_out_tiles():
+	for tile in tiles.values():
+		if tile.modulate.a > 0:
+			tile.fade_out()
 
 func _on_gui_input(event):
-	if event is InputEventMouseButton and event.button_index == MouseButton.LEFT and event.pressed:
-		var mouse_pos: Vector2 = tilemap_display.get_global_mouse_position()
-		var cell: Vector2i = tilemap_display.local_to_map(tilemap_display.to_local(mouse_pos))
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var mouse_pos: Vector2 = tilemap_source.get_global_mouse_position()
+		var cell: Vector2i = tilemap_source.local_to_map(tilemap_source.to_local(mouse_pos))
+		cell = Vector2i(floor(cell.x), floor(cell.y))
 		print("Tile clicked at position: %s" % cell)
 		emit_signal("tile_clicked", cell)
-	elif event is InputEventMouseMotion:
-		var mouse_pos: Vector2 = tilemap_display.get_global_mouse_position()
-		var cell: Vector2i = tilemap_display.local_to_map(tilemap_display.to_local(mouse_pos))
-		_update_displayed_tile(cell)
-
-func _update_displayed_tile(cell: Vector2i):
-	tilemap_display.clear()
-	var tile_id = tilemap_source.get_cell(0, cell)
-	if tile_id != -1:
-		tilemap_display.set_cell(0, cell, tile_id)
-
-func _on_tile_clicked(cell_position: Vector2i):
-	print("Tile clicked signal received: %s" % cell_position)
-	var event = Event.new()
-	event.type = "move_player"
-	event.data = {"position": cell_position}
-	event_bus.publish_event(event)
 
 func to_world(grid_position: Vector2i) -> Vector2:
 	return tilemap_source.map_to_local(grid_position)

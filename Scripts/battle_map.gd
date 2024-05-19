@@ -74,6 +74,8 @@ func snap_in_tiles(cell: Vector2i, opacity: float):
 		tile.position = tilemap_source.map_to_local(cell)
 		add_child(tile)
 		tiles[cell] = tile
+		if is_tile_impassable(cell):
+			tile.set_impassable()
 		tile.snap_in(opacity)
 	else:
 		var tile = tiles[cell]
@@ -121,3 +123,7 @@ func get_spawn_points() -> SpawnPoints:
 		i += 1
 
 	return SpawnPoints.new(pc_spawn_points, npc_spawn_points)
+
+func is_tile_impassable(cell: Vector2i) -> bool:
+	var tile_id = tilemap_source.get_cell_source_id(0, cell)
+	return tile_id == 1

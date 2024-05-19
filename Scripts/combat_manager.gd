@@ -34,4 +34,5 @@ func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: A
 		var actor = actors[i]
 		var spawn_point = spawn_points[i]
 		actor.position = battle_map.to_world(spawn_point.position)
+		actor.target_grid_position = spawn_point.position
 	return true

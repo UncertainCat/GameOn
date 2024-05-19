@@ -32,20 +32,17 @@ func _ready():
 
 	# Iterate through each active cell in the TileMap
 	for cell in get_used_cells(0):
-		var local_position = map_to_local(cell)
-		print(local_position)
-		
+		var local_position = map_to_local(cell)		
 		# Ensure the position is within image bounds
 		var tile_id = TILE_PASSABLE
-		if local_position.x < width and local_position.y < height:
+		if local_position.x < width and local_position.y < height and local_position.x > 0 and local_position.y > 0:
 			var color = terrain_key.get_pixelv(local_position)
 			if color.r > 0.5 and color.a > 0.5:  # Check if the pixel is red and not transparent
 				tile_id = TILE_IMPASSABLE
-				print("found an impassable tile at ", cell)
 		else:
 			tile_id = TILE_IMPASSABLE
-		
-		set_cell(0, cell, tile_id)
+		set_cell(0, cell, tile_id, Vector2i(0, 0))
 
 	# Defer the signal emission to ensure it occurs after the scene tree is fully ready
 	call_deferred("emit_signal", "tilemap_ready")
+

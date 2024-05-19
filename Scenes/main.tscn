@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4fostvgqitvv"]
+[gd_scene load_steps=6 format=3 uid="uid://d4fostvgqitvv"]
 
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
 [ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor.tscn" id="2_a8tnq"]
+[ext_resource type="Script" path="res://Scripts/player_controller.gd" id="3_43qmq"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]
 script/source = "extends Node2D
@@ -105,11 +106,14 @@ func _bind_inputs():
 [node name="Main" type="Node2D"]
 script = SubResource("GDScript_srgsc")
 
-[node name="PlayerCam" type="Camera2D" parent="."]
-z_index = 20
-zoom = Vector2(4, 4)
-script = SubResource("GDScript_t3v8n")
-
 [node name="ExampleMap" parent="." instance=ExtResource("1_gbcc2")]
 
 [node name="Actor" parent="." instance=ExtResource("2_a8tnq")]
+
+[node name="PlayerController" type="Node2D" parent="."]
+script = ExtResource("3_43qmq")
+
+[node name="PlayerCam" type="Camera2D" parent="PlayerController"]
+z_index = 20
+zoom = Vector2(4, 4)
+script = SubResource("GDScript_t3v8n")

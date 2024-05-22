@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxsi6l1c3efug"]
+
+[ext_resource type="Script" path="res://Scripts/UI/ActorPanel.gd" id="1"]
+
+[node name="ActorPanel" type="Panel"]
+script = ExtResource("1")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+stretch_mode = 2
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+text = "Name"
+
+[node name="HealthLabel" type="Label" parent="."]
+layout_mode = 0
+text = "Health"

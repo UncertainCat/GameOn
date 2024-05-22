@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
 [ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor.tscn" id="2_a8tnq"]
 [ext_resource type="Script" path="res://Scripts/combat_controller.gd" id="3_43qmq"]
-[ext_resource type="PackedScene" uid="uid://bk3cmwlyyrhl5" path="res://Scenes/Gui/InitiativeCarousel.tscn" id="4_mdk5x"]
+[ext_resource type="Script" path="res://Scripts/UI/initiative_carousel.gd" id="4_4cwa6"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]
 script/source = "extends Node2D
@@ -114,9 +114,14 @@ script = SubResource("GDScript_srgsc")
 [node name="CombatController" type="Node2D" parent="."]
 script = ExtResource("3_43qmq")
 
-[node name="InitiativeCarousel" parent="CombatController" instance=ExtResource("4_mdk5x")]
-
 [node name="PlayerCam" type="Camera2D" parent="CombatController"]
 z_index = 20
 zoom = Vector2(4, 4)
 script = SubResource("GDScript_t3v8n")
+
+[node name="InitiativeCarousel" type="Control" parent="CombatController"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_4cwa6")

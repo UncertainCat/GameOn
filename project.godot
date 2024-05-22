@@ -17,8 +17,8 @@ config/icon="res://Assets/Graphics/icon.svg"
 
 [autoload]
 
-event_bus="*res://Scripts/Events/EventBus.gd"
 combat_manager="*res://Scripts/combat_manager.gd"
+game_event_queue="*res://Scripts/Events/GameEventQueue.gd"
 
 [display]
 

@@ -80,6 +80,9 @@ func _fade_out_tiles():
 
 func to_world(grid_position: Vector2i) -> Vector2:
 	return tilemap_source.map_to_local(grid_position)
+	
+func to_cell(screen_position: Vector2) -> Vector2i:
+	return tilemap_source.local_to_map(screen_position)
 
 # Method to get spawn points
 func get_spawn_points() -> SpawnPoints:

@@ -1,23 +1,6 @@
-extends Node
+extends Action
 
-class_name Action
-
-# Enumerations for action types
-enum ActionType {
-	ONE,
-	TWO,
-	THREE,
-	REACTION,
-	FREE
-}
-
-# Core properties for an action
-var action_name: String
-var action_type: ActionType
-var cost: int
-var requirements: String
-var description: String
-var effects: Array
+class_name StrideAction
 
 func _init(action_data: Dictionary):
 	self.action_name = action_data.get("action_name", "")
@@ -41,6 +24,17 @@ func describe() -> String:
 func preview(combat_controller: CombatController):
 	print("preview is unimplemented!")
 	
-# Placeholder for game_steps method to be overridden by subclasses
 func game_steps(combat_manager: CombatManager) -> Array:
+	var steps = []
+	var path = calculate_path(combat_manager)
+	
+	for square in path:
+		steps.append(EnterSquareStep.new(square))
+		steps.append(ExitSquareStep.new(square))
+		
+	return steps
+
+# Placeholder for path calculation, to be implemented
+func calculate_path(combat_manager: CombatManager) -> Array:
+	# Return a list of squares (Vector2i) to be traversed
 	return []

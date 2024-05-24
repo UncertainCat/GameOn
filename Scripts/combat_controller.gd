@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name CombatController
+
 # Declare member variables here
 var selected_unit = null
 var current_action = null

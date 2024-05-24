@@ -2,14 +2,6 @@ extends Node
 
 class_name ActionDefinitions
 
-# Enumerations for action types
-enum ActionType {
-	ONE,
-	TWO,
-	THREE,
-	REACTION,
-	FREE
-}
 
 # Define actions as dictionaries
 var ACTIONS = {

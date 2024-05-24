@@ -34,24 +34,20 @@ func _process_events():
 	
 	var event = event_queue.pop_front()
 	_handle_event(event)
+	_process_events()
 
 # Handle an individual event
 func _handle_event(event: GameEvent) -> void:
 	var event_type = event.get_register()
 	print("handling event: ", listeners)
-	var tasks = []
 	for listener in listeners[event_type]:
-		tasks.append(_run_listener(listener, event))
-
-	# Wait for all listeners to finish before processing the next event
-	_process_tasks(tasks)
-
-# Process all tasks and wait for completion
-func _process_tasks(tasks: Array):
-	for task in tasks:
-		await task
-	_process_events()
+		_run_listener(listener, event)
 
 # Run a listener method
 func _run_listener(listener: Callable, event: GameEvent):
-	listener.call_deferred(event)
+	# Call the listener method deferred
+	call_deferred("_call_listener", listener, event)
+
+# Helper method to call the listener
+func _call_listener(listener: Callable, event: GameEvent):
+	listener.call(event)

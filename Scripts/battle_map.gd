@@ -71,8 +71,8 @@ func highlight_tile(cell: Vector2i, opacity: float = 1.0):
 		snap_in_tiles(adj_cell, 0.3)
 
 func snap_in_tiles(cell: Vector2i, opacity: float):
-	if not tiles.has(cell):
-		var tile = tiles[cell]
+	var tile = tiles[cell]
+	if tile:
 		tile.snap_in(opacity)
 
 func _fade_out_tiles():
@@ -112,7 +112,8 @@ func get_spawn_points() -> SpawnPoints:
 	return SpawnPoints.new(pc_spawn_points, npc_spawn_points)
 
 func is_tile_impassable(cell: Vector2i) -> bool:
-	return get_tile_cost(cell) == float('inf')
+	var tile_id = tilemap_source.get_cell_source_id(0, cell)
+	return tile_id == 1
 
 func add_actor(actor: Actor, position: Vector2i):
 	actors[actor] = position

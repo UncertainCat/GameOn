@@ -26,7 +26,6 @@ func set_normal():
 	is_impassable = false
 
 func set_opacity(opacity: float):
-	print(opacity)
 	modulate.a = opacity
 
 func fade_out():

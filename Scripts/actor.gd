@@ -20,7 +20,6 @@ func _ready():
 	game_event_queue.register_listener(MoveActorGameEvent.get_register(), self.on_move_event)
 
 func _process(delta):
-	highlight_emanation()
 	if battle_map:
 		var target_position = battle_map.to_world(target_grid_position)
 		if global_position != target_position:
@@ -47,16 +46,3 @@ func perform_action(action: String, target: Vector2i):
 		combat_manager.perform_action(self, action, target)
 	else:
 		print("No battle map assigned to actor")
-
-func highlight_emanation():
-	if battle_map:
-		var radius = stat_sheet.speed / 5
-		
-		# Measure time for get_emanation method
-		var emanation_area = battle_map.get_emanation(target_grid_position, Vector2i(1, 1), radius, true)
-		var end_time_emanation = Time.get_ticks_usec()
-		
-		# Measure time for highlight_tile method
-		for cell in emanation_area:
-			battle_map.highlight_tile(cell)
-

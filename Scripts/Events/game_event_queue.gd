@@ -2,6 +2,10 @@ extends Node
 
 class_name GameEventQueue
 
+signal event_received(event: GameEvent)
+signal event_processed(event: GameEvent)
+signal listener_completed(event: GameEvent)
+
 # Singleton instance
 var instance: GameEventQueue = null
 
@@ -10,6 +14,9 @@ var listeners: Dictionary = {}
 
 # Queue to store events
 var event_queue: Array = []
+
+# Track the number of active listeners for the current event
+var active_listeners: Array[Callable] = []
 
 # Initialize the singleton
 func _init():
@@ -29,25 +36,26 @@ func add_event(event: GameEvent):
 
 # Process events in the queue
 func _process_events():
-	if event_queue.is_empty():
+	if event_queue.is_empty() or active_listeners.size() > 0:
 		return
-	
 	var event = event_queue.pop_front()
-	_handle_event(event)
+	var event_type = event.get_register()
+	if listeners.has(event_type):
+		for callback in listeners[event_type]:
+			active_listeners.append(callback)
+			var on_complete = func ():
+				active_listeners.erase(callback)
+				_process_events()
+			callback.call(on_complete, event)
+
+# Handle listener completion
+func _on_listener_completed(event: GameEvent):
 	_process_events()
 
-# Handle an individual event
-func _handle_event(event: GameEvent) -> void:
-	var event_type = event.get_register()
-	print("handling event: ", listeners)
-	for listener in listeners[event_type]:
-		_run_listener(listener, event)
+# Complete the event
+func complete_event(event: GameEvent):
+	emit_signal("listener_completed", event)
 
-# Run a listener method
-func _run_listener(listener: Callable, event: GameEvent):
-	# Call the listener method deferred
-	call_deferred("_call_listener", listener, event)
-
-# Helper method to call the listener
-func _call_listener(listener: Callable, event: GameEvent):
-	listener.call(event)
+# Connect signals in the constructor
+func _ready():
+	connect("listener_completed", _on_listener_completed)

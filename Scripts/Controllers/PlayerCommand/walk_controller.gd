@@ -1,0 +1,3 @@
+extends CommandController
+
+class_name WalkCommandController

@@ -62,6 +62,18 @@ func get_unit_at(position: Vector2i) -> Node2D:
 		return npc_units[position]
 	return null
 
+func get_unit_position(actor: Node2D) -> Vector2i:
+	# Iterate through all PC units to check if the actor is a PC
+	for position in pc_units.keys():
+		if pc_units[position] == actor:
+			return position
+
+	# Iterate through all NPC units to check if the actor is an NPC
+	for position in npc_units.keys():
+		if npc_units[position] == actor:
+			return position
+	return Vector2i(-1, -1)
+
 # Method to get the first PC unit
 func get_first_pc_unit() -> Node2D:
 	if pc_units.size() > 0:
@@ -73,19 +85,18 @@ func is_pc_unit(unit: Node2D) -> bool:
 	return pc_units.values().has(unit)
 
 # Method to validate actions
-func validate_action(unit: Node2D, action: String, target: Vector2i) -> bool:
+func validate_action(action: Action) -> bool:
 	# Add custom logic to validate actions
 	# This can include range checks, line of sight, etc.
 	return true
 
 # Method to perform actions
-func perform_action(actor: Actor, action: String, target: Vector2i):
-	if validate_action(actor, action, target):
+func perform_action(action: Action):
+	if validate_action(action):
 		# Perform the action (the actual action logic should be implemented here)
 		# For now, we just print the action
-		print("%s performs %s on %s" % [actor.name, action, target])
-		
-		var move_event = MoveActorGameEvent.new(current_battle_map.to_cell(actor.position), target)
-		game_event_queue.add_event(move_event)
+		pass
+		#var move_event = MoveActorGameEvent.new(current_battle_map.to_cell(actor.position), target)
+		#game_event_queue.add_event(move_event)
 	else:
 		print("Invalid action or target")

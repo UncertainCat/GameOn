@@ -158,9 +158,9 @@ func get_shortest_path(start: Vector2i, target: Vector2i) -> Array[Vector2i]:
 func get_simple_path(start: Vector2, target: Vector2) -> Array[Vector2]:
 	return [start, target]
 
-func get_walking_distance(start: Vector2i, target: Vector2i, path: Array[Vector2i] = [], consider_terrain: bool = false) -> int:
-	var full_path = [start] + path + [target]
-	return calculate_step_distance(full_path, consider_terrain)
+func get_walking_distance(target: Vector2i, path: Array[Vector2i], consider_terrain: bool = false) -> int:
+	var full_path = path + [target]
+	return calculate_step_distance(full_path, consider_terrain) - calculate_step_distance(path)
 
 
 # Implements Pathfinder 2e diagonal rules by iterating through the path and counting diagonals

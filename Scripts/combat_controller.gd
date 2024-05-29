@@ -2,25 +2,17 @@ extends Node2D
 
 class_name CombatController
 
+signal action_card_selected(action_card)
+signal action_card_activated(action_card, target_cell)
+
 # Declare member variables here
 var selected_unit = null
-var current_action = null
-var action_history = []
-
-# GUI Components
-@onready var initiative_carousel = $InitiativeCarousel
-#onready var available_actions_panel = $AvailableActionsPanel
+var current_action: ActionCard
+var default_movement: ActionCard
 
 func _ready():
+	default_movement = StrideActionCard.new()
 	set_process(true)
-	_initialize_gui()
-	_select_default_unit_if_none()
-
-func _initialize_gui():
-	# Initialize the GUI components
-	initiative_carousel.setup()
-	# available_actions_panel.setup()
-	# chat_log.setup()
 
 func _process(_delta):
 	var battle_map = combat_manager.current_battle_map
@@ -41,63 +33,25 @@ func _on_left_click():
 	if battle_map:
 		var cell = battle_map.to_cell(get_global_mouse_position())
 		var unit = combat_manager.get_unit_at(cell)
-		if unit and combat_manager.is_pc_unit(unit):
-			select_unit(unit)
-		elif current_action:
-			if validate_action(current_action, cell):
-				perform_action(current_action, cell)
-				current_action = null
+		if unit:
+			if unit.controller == self:
+				select_unit(unit)
 			else:
-				print("Invalid action")
-		elif selected_unit:
-			if validate_action("stride", cell):
-				perform_action("stride", cell)
-			else:
-				print("Invalid default action")
-		elif unit:
-			select_unit(unit)
+				emit_signal("action_card_activated", current_action, cell)
 		else:
 			print("No unit selected and no action to perform")
+	else:
+		print("No active battle map found!")
 
 func select_unit(unit):
 	selected_unit = unit
 	current_action = null
-	update_ui_for_selected_unit(unit)
 	print("unit selected: ", unit)
-
-func update_ui_for_selected_unit(unit):
-	# Update UI to reflect the selected unit's actions and stats
-	pass
-
-func validate_action(action, target):
-	return combat_manager.validate_action(selected_unit, action, target)
 
 func select_action(action):
 	if selected_unit:
 		current_action = action
+		emit_signal("action_card_selected", action)
 		print("action selected: ", action)
 	else:
 		print("No unit selected to perform action")
-
-func perform_action(action, target):
-	if validate_action(action, target):
-		selected_unit.perform_action(action, target)
-	else:
-		print("Invalid action or no unit selected.")
-
-# Signal Handlers
-func _on_initiative_updated(new_order):
-	initiative_carousel.update_order(new_order)
-
-func _on_action_performed(actor, action, target):
-	action_history.append({"unit": actor, "action": action, "target": target})
-	print("Action performed by %s: %s on %s" % [actor.name, action, target])
-
-func _select_default_unit_if_none():
-	if not selected_unit:
-		selected_unit = combat_manager.get_first_pc_unit()
-		if selected_unit:
-			update_ui_for_selected_unit(selected_unit)
-			print("Default unit selected: ", selected_unit)
-		else:
-			print("No PC units available for selection.")

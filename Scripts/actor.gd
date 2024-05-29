@@ -7,7 +7,7 @@ var sprite_speed = 200
 var battle_map: BattleMap  # Reference to the Map node
 var stat_sheet: StatSheet  # The actor's stat sheet
 var is_moving = false  # Flag to check if the actor is currently moving
-var action_cards = Array[ActionCard]
+var action_cards: Array[ActionCard] = []
 
 @onready var sprite = $AnimatedSprite2D  # Reference to the AnimatedSprite
 

@@ -16,7 +16,7 @@ func process(combat_manager: CombatManager) -> Array[GameStep]:
 	var map = combat_manager.current_battle_map
 	if actor.can_walk() == false:
 		return []
-	var speed = actor.evaluate_walk_speed(actor)
+	var speed = actor.evaluate_walk_speed()
 	var to_square = command_controller.request_next_walk_cell(actor, from_path, speed)
 	if from_path.count(to_square) > 0:
 		return []

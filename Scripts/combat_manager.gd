@@ -100,3 +100,6 @@ func perform_action(action: Action):
 		#game_event_queue.add_event(move_event)
 	else:
 		print("Invalid action or target")
+
+func action_requested(actor: Actor) -> bool:
+	return true

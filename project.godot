@@ -19,7 +19,7 @@ config/icon="res://Assets/Graphics/icon.svg"
 
 combat_manager="*res://Scripts/combat_manager.gd"
 game_event_queue="*res://Scripts/Events/game_event_queue.gd"
-command_controller="*res://Scripts/Controllers/PlayerCommand/player_command_controller.gd"
+command_controller="*res://Scripts/Controllers/command_controller.gd"
 
 [display]
 

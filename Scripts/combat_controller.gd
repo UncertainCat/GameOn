@@ -1,28 +1,29 @@
 extends Node2D
 
-class_name CombatController
+class_name CombatUxController
 
-signal action_card_selected(action_card)
-signal action_card_activated(action_card, target_cell)
-
-# Declare member variables here
-var selected_unit = null
-var current_action: ActionCard
-var default_movement: ActionCard
+var selected_unit: Actor = null
+var current_action: ActionCard = null
 
 func _ready():
-	default_movement = StrideActionCard.new()
 	set_process(true)
 
 func _process(_delta):
 	var battle_map = combat_manager.current_battle_map
-	if battle_map:
-		var mouse_pos = get_global_mouse_position()
-		var cell = battle_map.to_cell(mouse_pos)
-		cell = Vector2i(floor(cell.x), floor(cell.y))
-		battle_map.highlight_tile(cell)
-	else:
+	if battle_map == null:
 		print("No active battle map found!")
+		return
+	if not selected_unit:
+		return
+	if not combat_manager.action_requested(selected_unit):
+		return
+	var mouse_pos = get_global_mouse_position()
+	var cell = battle_map.to_cell(mouse_pos)
+	cell = Vector2i(floor(cell.x), floor(cell.y))
+	if not current_action:
+		command_controller.preview_card(default_action(selected_unit))
+	else:
+		command_controller.preview_card(current_action)
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -30,28 +31,38 @@ func _input(event):
 
 func _on_left_click():
 	var battle_map = combat_manager.current_battle_map
-	if battle_map:
-		var cell = battle_map.to_cell(get_global_mouse_position())
-		var unit = combat_manager.get_unit_at(cell)
-		if unit:
-			if unit.controller == self:
-				select_unit(unit)
-			else:
-				emit_signal("action_card_activated", current_action, cell)
-		else:
-			print("No unit selected and no action to perform")
-	else:
+	if not battle_map:
 		print("No active battle map found!")
+		return
+
+	var cell = battle_map.to_cell(get_global_mouse_position())
+	var clicked_unit = combat_manager.get_unit_at(cell)
+	if clicked_unit:
+		if not clicked_unit == selected_unit:
+			select_unit(clicked_unit)
+	elif not selected_unit == null:
+		if current_action == null:
+			command_controller.execute_card(default_action(selected_unit))
+		else:
+			command_controller.execute_card(current_action)
 
 func select_unit(unit):
 	selected_unit = unit
 	current_action = null
-	print("unit selected: ", unit)
+	print("Unit selected: ", unit)
+
+func default_action(unit: Actor) -> ActionCard:
+	for card in unit.action_cards:
+		if card is StrideActionCard:
+			return card
+	# Assume every unit must have a stride action, create if not found
+	var new_card = StrideActionCard.new()
+	unit.action_cards.append(new_card)
+	return new_card
 
 func select_action(action):
 	if selected_unit:
 		current_action = action
-		emit_signal("action_card_selected", action)
-		print("action selected: ", action)
+		print("Action selected: ", action)
 	else:
 		print("No unit selected to perform action")

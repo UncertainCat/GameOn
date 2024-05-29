@@ -18,16 +18,14 @@ var requirements: String
 var description: String
 var actor: Actor
 var effects: Array
-var command_controller: CommandController
 
-func _init(command_controller: CommandController, action_name: String, action_type: ActionType, requirements: String, description: String, actor: Actor, effects: Array = []):
+func _init(action_name: String, action_type: ActionType, requirements: String, description: String, actor: Actor, effects: Array = []):
 	self.action_name = action_name
 	self.action_type = action_type
 	self.requirements = requirements
 	self.description = description
 	self.actor = actor
 	self.effects = effects
-	self.command_controller = command_controller
 
 # Method to describe the action
 func describe() -> String:
@@ -38,9 +36,6 @@ func describe() -> String:
 		description,
 		effects
 	]
-
-func preview(combat_controller: CombatController):
-	print("preview is unimplemented!")
 
 # Use the passed game_steps function
 func game_steps(combat_manager: CombatManager) -> Array:

@@ -14,7 +14,6 @@ func _init():
 
 func create_stride_action(actor: Actor) -> Action:
 	var action = Action.new(
-		self.command_controller,
 		self.action_name,
 		self.action_type,
 		self.requirements,

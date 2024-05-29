@@ -111,12 +111,12 @@ script = SubResource("GDScript_srgsc")
 
 [node name="Actor" parent="." instance=ExtResource("2_a8tnq")]
 
-[node name="CombatController" type="Node2D" parent="."]
+[node name="CombatUxController" type="Node2D" parent="."]
 script = ExtResource("3_43qmq")
 
-[node name="InitiativeCarousel" parent="CombatController" instance=ExtResource("4_mdk5x")]
+[node name="InitiativeCarousel" parent="CombatUxController" instance=ExtResource("4_mdk5x")]
 
-[node name="PlayerCam" type="Camera2D" parent="CombatController"]
+[node name="PlayerCam" type="Camera2D" parent="CombatUxController"]
 z_index = 20
 zoom = Vector2(4, 4)
 script = SubResource("GDScript_t3v8n")

@@ -71,9 +71,8 @@ func highlight_tile(cell: Vector2i, opacity: float = 1.0):
 		snap_in_tiles(adj_cell, 0.3)
 
 func snap_in_tiles(cell: Vector2i, opacity: float):
-	var tile = tiles[cell]
-	if tile:
-		tile.snap_in(opacity)
+	if tiles.find_key(cell):
+		tiles.get(cell).snap_in(opacity)
 
 func _fade_out_tiles():
 	for tile in tiles.values():

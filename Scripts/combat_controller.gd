@@ -21,9 +21,9 @@ func _process(_delta):
 	var cell = battle_map.to_cell(mouse_pos)
 	cell = Vector2i(floor(cell.x), floor(cell.y))
 	if not current_action:
-		command_controller.preview_card(default_action(selected_unit))
+		command_controller.preview_card(selected_unit, default_action(selected_unit), cell)
 	else:
-		command_controller.preview_card(current_action)
+		command_controller.preview_card(selected_unit, current_action, cell)
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -42,9 +42,9 @@ func _on_left_click():
 			select_unit(clicked_unit)
 	elif not selected_unit == null:
 		if current_action == null:
-			command_controller.execute_card(default_action(selected_unit))
+			command_controller.execute_card(selected_unit, default_action(selected_unit), cell)
 		else:
-			command_controller.execute_card(current_action)
+			command_controller.execute_card(selected_unit, current_action, cell)
 
 func select_unit(unit):
 	selected_unit = unit

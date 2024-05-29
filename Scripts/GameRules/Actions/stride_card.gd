@@ -4,26 +4,20 @@ class_name StrideActionCard
 
 # Override _init to set specific values for StrideAction
 func _init():
-	super._init(
-		"Stride",
-		"You move up to your Speed.",
-		Action.ActionType.ONE,
-		"No requirements",
-		[]
-	)
+	self.action_name = "Stride"
+	self.description = "You move up to your Speed."
+	self.action_type = Action.ActionType.ONE
+	self.requirements = ""
 
 func create_stride_action(actor: Actor) -> Action:
-	var action = Action.new(
+	var start_path: Array[Vector2i] = [combat_manager.get_unit_position(actor)]
+	var steps: Array[GameStep] = []
+	steps.append(WalkStep.new(start_path, actor))
+	return Action.new(
 		self.action_name,
 		self.action_type,
 		self.requirements,
 		self.description,
 		actor,
-		self.effects,
+		steps,
 	)
-	action.game_steps = func game_steps(combat_manager: CombatManager) -> Array:
-		var start_path = [combat_manager.current_battle_map.get_unit_position(actor)]
-		var steps = []
-		steps.append(WalkStep.new(start_path, action, actor))
-		return steps
-	return action

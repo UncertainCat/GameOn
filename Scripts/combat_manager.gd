@@ -72,7 +72,7 @@ func get_unit_position(actor: Node2D) -> Vector2i:
 	for position in npc_units.keys():
 		if npc_units[position] == actor:
 			return position
-	return Vector2i(-1, -1)
+	return Vector2i(-99999, -99999)
 
 # Method to get the first PC unit
 func get_first_pc_unit() -> Node2D:

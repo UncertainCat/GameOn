@@ -4,12 +4,10 @@ class_name WalkStep
 
 var from_path: Array[Vector2i]
 var distance_walked: int
-var stride: Action
 var actor: Actor
 
-func _init(from_path: Array[Vector2i], stride: Action, actor: Actor):
+func _init(from_path: Array[Vector2i], actor: Actor):
 	self.from_path = from_path
-	self.stride = stride
 	self.actor = actor
 
 func process(combat_manager: CombatManager) -> Array[GameStep]:
@@ -35,6 +33,6 @@ func process(combat_manager: CombatManager) -> Array[GameStep]:
 	new_path.append(to_square)
 	var next_steps = [exit_step, enter_step]
 	if next_steps:
-		next_steps.append(WalkStep.new(new_path, stride, actor))
+		next_steps.append(WalkStep.new(new_path, actor))
 	return next_steps
 

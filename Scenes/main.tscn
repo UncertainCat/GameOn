@@ -18,8 +18,8 @@ func _ready():
 	actor.name = \"PC1\"
 	
 	# Start the combat with this single actor as the PC
-	combat_manager.start_combat(battle_map, [actor], [])
-	
+	combat_manager.populate_combat(battle_map, [actor], [])
+	combat_manager.start_combat()
 	# Log the actor's initial position
 	print(\"Actor spawned at position: %s\" % actor.global_position)
 "

@@ -10,21 +10,22 @@ var awaiting_action: bool = false
 
 func _ready():
 	# Connect the action_selected signal to a method to handle the selected action
-	connect("action_selected",_on_action_selected)
+	connect("action_selected", action_selected)
 
 # The next_action method that waits for an action command
 func next_action(actor: Actor) -> Action:
+	print("Awaiting an action")
 	self.actor = actor
 	awaiting_action = true
 	var action_result = await action_selected
 	awaiting_action = false
 	var action_card = action_result[0]
 	var target_cell = action_result[1]
-	execute_card(actor, action_card, target_cell)
-	return action_card
+	var action = build_card(actor, action_card, target_cell)
+	return action
 
 # Signal handler for when an action is selected
-func _on_action_selected(action_card: ActionCard, target_cell: Vector2i):
+func action_selected(action_card: ActionCard, target_cell: Vector2i):
 	if awaiting_action:
 		emit_signal("action_selected", action_card, target_cell)
 
@@ -35,12 +36,14 @@ func preview_card(actor: Actor, action_card: ActionCard, preview_cell: Vector2i)
 	else:
 		print("Preview not implemented for this type of action card")
 
-# Method to execute the card
-func execute_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i):
+# Method to build the action from the card
+func build_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i) -> Action:
 	if action_card is StrideActionCard:
-		execute_stride_action(actor, target_cell)
+		return StrideActionCard.new().create_stride_action(actor)
 	else:
-		print("Execute not implemented for this type of action card")
+		print("build not implemented for this type of action card: ", action_card)
+		return null
+
 
 # Preview the possible movement for stride actions
 func preview_stride_action(actor: Actor, target_cell: Vector2i):

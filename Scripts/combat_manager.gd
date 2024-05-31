@@ -7,6 +7,7 @@ var current_steps: Array[GameStep] = []
 var game_step_listeners: Dictionary = {} # Dictionary to hold listeners for specific game steps
 var current_combatant: Actor = null
 var current_battle_map: BattleMap
+var pending_action_request: bool = false
 
 func _ready():
 	# Initialization logic if needed
@@ -26,8 +27,11 @@ func populate_combat(battle_map: BattleMap, pcs: Array[Node2D], npcs: Array[Node
 	if not _place_actors(battle_map, npcs, spawn_points.npc_spawn_points, "NPC"):
 		return
 
+func action_requested(actor: Actor):
+	pass
+
 # Helper method to place actors
-func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: Array, actor_type: String) -> bool:
+func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: Array[Vector2i], actor_type: String) -> bool:
 	if actors.size() > spawn_points.size():
 		push_error("Not enough %s spawn points for all %ss" % [actor_type, actor_type])
 		return false
@@ -76,7 +80,9 @@ func start_combat():
 		process_steps([turn_began_step])
 
 		while true:
-			var next_action = command_controller.next_action()
+			pending_action_request = true
+			var next_action = await command_controller.next_action(current_combatant)
+			pending_action_request = false
 			if next_action == null:
 				var turn_ended_step = TurnEndedStep.new(current_combatant)
 				process_steps([turn_ended_step])
@@ -84,7 +90,7 @@ func start_combat():
 			else:
 				var action_start_step = ActionStartStep.new(next_action)
 				var action_end_step = ActionEndStep.new(next_action)
-				var action_steps = next_action.game_steps(self)
+				var action_steps = next_action.game_steps
 				process_steps([action_start_step] + action_steps + [action_end_step])
 
 # Function to register a listener for a specific game step

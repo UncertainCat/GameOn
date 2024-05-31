@@ -13,25 +13,12 @@ var actors = {}
 # Distance cache
 var distance_cache = {}
 
-# Custom spawn point types
-class SpawnPoint:
-	var position: Vector2i
-
-	func _init(pos: Vector2i):
-		position = pos
-
-class PcSpawnPoint extends SpawnPoint:
-	pass
-
-class NpcSpawnPoint extends SpawnPoint:
-	pass
-
 # Custom struct for spawn points
 class SpawnPoints:
-	var pc_spawn_points: Array[PcSpawnPoint]
-	var npc_spawn_points: Array[NpcSpawnPoint]
+	var pc_spawn_points: Array[Vector2i]
+	var npc_spawn_points: Array[Vector2i]
 
-	func _init(pc_points: Array[PcSpawnPoint], npc_points: Array[NpcSpawnPoint]):
+	func _init(pc_points: Array[Vector2i], npc_points: Array[Vector2i]):
 		pc_spawn_points = pc_points
 		npc_spawn_points = npc_points
 
@@ -85,8 +72,8 @@ func to_cell(screen_position: Vector2) -> Vector2i:
 	return tilemap_source.local_to_map(screen_position)
 
 func get_spawn_points() -> SpawnPoints:
-	var pc_spawn_points: Array[PcSpawnPoint] = []
-	var npc_spawn_points: Array[NpcSpawnPoint] = []
+	var pc_spawn_points: Array[Vector2i] = []
+	var npc_spawn_points: Array[Vector2i] = []
 
 	var i = 0
 	while true:
@@ -94,7 +81,7 @@ func get_spawn_points() -> SpawnPoints:
 		if not tilemap_source.has_node(pc_spawn_name):
 			break
 		var pc_spawn = tilemap_source.get_node(pc_spawn_name) as Marker2D
-		var spawn_point = PcSpawnPoint.new(tilemap_source.local_to_map(pc_spawn.position))
+		var spawn_point = tilemap_source.local_to_map(pc_spawn.position)
 		pc_spawn_points.append(spawn_point)
 		i += 1
 
@@ -104,7 +91,7 @@ func get_spawn_points() -> SpawnPoints:
 		if not tilemap_source.has_node(npc_spawn_name):
 			break
 		var npc_spawn = tilemap_source.get_node(npc_spawn_name) as Marker2D
-		var spawn_point = NpcSpawnPoint.new(tilemap_source.local_to_map(npc_spawn.position))
+		var spawn_point = [tilemap_source.local_to_map(npc_spawn.position)]
 		npc_spawn_points.append(spawn_point)
 		i += 1
 
@@ -134,7 +121,7 @@ func get_actors_in_radius(center: Vector2i, radius: int) -> Array[Actor]:
 	return result
 
 func get_actors_in_square(top_left: Vector2i, bottom_right: Vector2i) -> Array[Actor]:
-	var result = []
+	var result: Array[Actor] = []
 	for actor in actors.keys():
 		var pos = actors[actor]
 		if pos.x >= top_left.x and pos.x <= bottom_right.x and pos.y >= top_left.y and pos.y <= bottom_right.y:

@@ -17,14 +17,13 @@ var complete_movement: Callable
 func _init():
 	stat_sheet = StatSheet.new()
 
-func assign(map: BattleMap):
-	battle_map = map
-
 func _ready():
 	sprite.play("idle")  # Start with idle animation
-	game_event_queue.register_listener(MoveActorGameEvent.get_register(), _on_move_event)
+	#game_event_queue.register_listener(MoveActorGameEvent.get_register(), _on_move_event)
+	#game_event_queue.register_listener(SpawnActorGameEvent.get_register(), _on_spawn_event)
 
 func _process(delta):
+	var battle_map = combat_manager.current_battle_map
 	if is_moving and battle_map:
 		var target_position = battle_map.to_world(target_grid_position)
 		if global_position != target_position:
@@ -48,7 +47,11 @@ func move_to_grid_position(new_grid_position: Vector2i):
 	is_moving = true
 	print("Moving to new grid position: %s" % target_grid_position)
 
-# Handle the move event
+
+func _on_spawn_event(on_complete: Callable, event SpawnActorGameEvent) -> void:
+	var battle_map = combat_manager.current_battle_map
+	global_position = battle_map.to_world(event.cell)
+	
 func _on_move_event(on_complete: Callable, event: MoveActorGameEvent) -> void:
 	print("Player received move_player event")
 	complete_movement = on_complete

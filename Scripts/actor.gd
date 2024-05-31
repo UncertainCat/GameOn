@@ -4,7 +4,6 @@ class_name Actor
 
 var target_grid_position = Vector2i()
 var sprite_speed = 200
-var battle_map: BattleMap  # Reference to the Map node
 var stat_sheet: StatSheet  # The actor's stat sheet
 var is_moving = false  # Flag to check if the actor is currently moving
 var action_cards: Array[ActionCard] = []
@@ -19,8 +18,8 @@ func _init():
 
 func _ready():
 	sprite.play("idle")  # Start with idle animation
-	#game_event_queue.register_listener(MoveActorGameEvent.get_register(), _on_move_event)
-	#game_event_queue.register_listener(SpawnActorGameEvent.get_register(), _on_spawn_event)
+	game_event_queue.register_listener(MoveActorGameEvent.get_register(), _on_move_event)
+	game_event_queue.register_listener(SpawnActorGameEvent.get_register(), _on_spawn_event)
 
 func _process(delta):
 	var battle_map = combat_manager.current_battle_map
@@ -38,7 +37,7 @@ func _process(delta):
 		else:
 			sprite.play("idle")  # Ensure the player is idle when not moving
 			is_moving = false
-	if is_moving == false and complete_movement:
+	if not is_moving and complete_movement:
 		complete_movement.call()
 
 # Move to a new grid position
@@ -48,7 +47,8 @@ func move_to_grid_position(new_grid_position: Vector2i):
 	print("Moving to new grid position: %s" % target_grid_position)
 
 
-func _on_spawn_event(on_complete: Callable, event SpawnActorGameEvent) -> void:
+func _on_spawn_event(on_complete: Callable, event: SpawnActorGameEvent) -> void:
+	print("Player received on_spawn event")
 	var battle_map = combat_manager.current_battle_map
 	global_position = battle_map.to_world(event.cell)
 	

@@ -14,7 +14,6 @@ script/source = "extends Node2D
 func _ready():
 	
 	# Initialize the actor with the battle map
-	actor.assign(battle_map)
 	actor.name = \"PC1\"
 	
 	# Start the combat with this single actor as the PC

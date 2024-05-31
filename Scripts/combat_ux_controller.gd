@@ -42,9 +42,9 @@ func _on_left_click():
 			select_unit(clicked_unit)
 	elif not selected_unit == null:
 		if current_action == null:
-			command_controller.execute_card(selected_unit, default_action(selected_unit), cell)
+			command_controller.select_action(selected_unit, default_action(selected_unit), cell)
 		else:
-			command_controller.execute_card(selected_unit, current_action, cell)
+			command_controller.select_action(selected_unit, current_action, cell)
 
 func select_unit(unit):
 	selected_unit = unit

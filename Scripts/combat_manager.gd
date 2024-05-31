@@ -89,10 +89,12 @@ func start_combat():
 				process_steps([turn_ended_step])
 				break
 			else:
-				var action_start_step = ActionStartStep.new(next_action)
-				var action_end_step = ActionEndStep.new(next_action)
-				var action_steps = next_action.game_steps
-				process_steps([action_start_step] + action_steps + [action_end_step])
+				var action_start_step: GameStep = ActionStartStep.new(next_action)
+				var action_end_step: GameStep = ActionEndStep.new(next_action)
+				var action_steps: Array[GameStep] = next_action.game_steps
+				action_steps.push_front(action_start_step)
+				action_steps.push_back(action_end_step)
+				process_steps(action_steps)
 
 # Function to register a listener for a specific game step
 func register_game_step_listener(step_class: String, listener: Array[GameStep]):

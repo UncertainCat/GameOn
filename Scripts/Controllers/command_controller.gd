@@ -7,27 +7,20 @@ signal action_selected(action_card: ActionCard, target_cell: Vector2i)
 var current_path: Array[Vector2i] = []
 var actor: Actor = null
 var awaiting_action: bool = false
+var action_result = null
 
-func _ready():
-	# Connect the action_selected signal to a method to handle the selected action
-	connect("action_selected", action_selected)
+var selected_card: ActionCard
+var target_cell: Vector2i
 
 # The next_action method that waits for an action command
 func next_action(actor: Actor) -> Action:
 	print("Awaiting an action")
 	self.actor = actor
 	awaiting_action = true
-	var action_result = await action_selected
+	var result = await action_selected
 	awaiting_action = false
-	var action_card = action_result[0]
-	var target_cell = action_result[1]
-	var action = build_card(actor, action_card, target_cell)
+	var action = build_card(actor, selected_card, target_cell)
 	return action
-
-# Signal handler for when an action is selected
-func action_selected(action_card: ActionCard, target_cell: Vector2i):
-	if awaiting_action:
-		emit_signal("action_selected", action_card, target_cell)
 
 # Method to preview the card
 func preview_card(actor: Actor, action_card: ActionCard, preview_cell: Vector2i):
@@ -43,7 +36,6 @@ func build_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i) ->
 	else:
 		print("build not implemented for this type of action card: ", action_card)
 		return null
-
 
 # Preview the possible movement for stride actions
 func preview_stride_action(actor: Actor, target_cell: Vector2i):
@@ -88,8 +80,11 @@ func preview_path():
 		combat_manager.current_battle_map.highlight_tile(cell, 1.0)
 
 # Trigger the action selected signal
-func select_action(action_card: ActionCard, target_cell: Vector2i):
-	emit_signal("action_selected", action_card, target_cell)
+func select_action(actor: Actor, action_card: ActionCard, target_cell: Vector2i):
+	if awaiting_action and self.actor == actor:
+		self.selected_card = action_card
+		self.target_cell = target_cell
+		emit_signal("action_selected", action_card, target_cell)
 
 # Dummy method to get the current action card
 # In a real implementation, this should get the actual action card selected by the player

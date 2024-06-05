@@ -45,6 +45,9 @@ terrain_key = ExtResource("4_44esp")
 [node name="PcSpawnPoint0" type="Marker2D" parent="TileMapSource"]
 position = Vector2(480, 529)
 
+[node name="PcSpawnPoint1" type="Marker2D" parent="TileMapSource"]
+position = Vector2(511, 544)
+
 [node name="NpcSpawnPoint0" type="Marker2D" parent="TileMapSource"]
 position = Vector2(672, 626)
 

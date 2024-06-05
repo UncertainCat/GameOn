@@ -34,10 +34,10 @@ func next_walk_cell(actor: Actor, from_path: Array[Vector2i], speed: int) -> Vec
 	awaiting_movement = false
 	return current_path.pop_front()
 
+
 # Method to preview the card
 func preview_card(actor: Actor, action_card: ActionCard, preview_cell: Vector2i):
-	if action_card is StrideActionCard:
-		
+	if action_card is StrideActionCard and (awaiting_action or awaiting_movement):
 		var speed = actor.evaluate_walk_speed()
 		preview_stride_action(actor, preview_cell, speed)
 	else:
@@ -46,7 +46,9 @@ func preview_card(actor: Actor, action_card: ActionCard, preview_cell: Vector2i)
 # Method to build the action from the card
 func build_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i) -> Action:
 	if action_card is StrideActionCard:
-		self.current_path = combat_manager.current_battle_map.get_shortest_path(combat_manager.get_unit_position(actor), target_cell)
+		var actor_cell = combat_manager.get_unit_position(actor)
+		self.current_path = combat_manager.current_battle_map.get_shortest_walking_path(actor_cell, target_cell)
+		self.current_path.pop_front()
 		return StrideActionCard.new().create_stride_action(actor)
 	else:
 		print("build not implemented for this type of action card: ", action_card)
@@ -59,15 +61,13 @@ func preview_stride_action(actor: Actor, target_cell: Vector2i, speed: int):
 	var start_position = combat_manager.current_battle_map.get_actor_position(actor)
 	var possible_moves: Array[Vector2i] = combat_manager.current_battle_map.get_emanation(start_position, Vector2i.ZERO, speed, true)
 	var highlighted_path = []
-
-	combat_manager.current_battle_map.clear_highlights()  # Clear previous highlights
 	# Highlight all possible moves with a lower opacity
 	for move in possible_moves:
-		combat_manager.current_battle_map.highlight_tile(move, 0.5)
+		combat_manager.current_battle_map.highlight_tile(move, 0.2)
 
 	# Check if the mouse is over a possible move and calculate the path to it
 	if possible_moves.has(mouse_cell):
-		highlighted_path = combat_manager.current_battle_map.get_shortest_path(start_position, mouse_cell)
+		highlighted_path = combat_manager.current_battle_map.get_shortest_walking_path(start_position, mouse_cell)
 
 		# Highlight the path to the mouse position with a brighter highlight
 		for cell in highlighted_path:
@@ -87,9 +87,10 @@ func select_action(actor: Actor, action_card: ActionCard, target_cell: Vector2i)
 		self.target_cell = target_cell
 		emit_signal("action_selected")
 
-func select_movement(actor: Actor, path: Array[Vector2i]):
+func select_movement(actor: Actor, target_cell: Vector2i):
 	if awaiting_movement and self.actor == actor:
-		self.current_path = path
+		var actor_cell = combat_manager.get_unit_position(actor)
+		self.current_path = combat_manager.current_battle_map.get_shortest_walking_path(actor_cell, target_cell)
 		emit_signal("move_selected")
 		
 # Dummy method to get the current action card

@@ -1,0 +1,74 @@
+[gd_scene load_steps=11 format=3 uid="uid://c7lpln1y3w06j"]
+
+[ext_resource type="Script" path="res://Scripts/actor.gd" id="1_ajvx3"]
+[ext_resource type="Texture2D" uid="uid://bwagw0ey0v2lk" path="res://Assets/RpgDungeon/chara_hero.png" id="2_i4c8u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u8aw6"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c5311"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wjuxo"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbm4f"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(0, 144, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nh8nj"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(48, 144, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d5a8a"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(96, 144, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbjle"]
+atlas = ExtResource("2_i4c8u")
+region = Rect2(144, 144, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1wvdm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u8aw6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c5311")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wjuxo")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbm4f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nh8nj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d5a8a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbjle")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}]
+
+[node name="Actor" type="Node2D"]
+script = ExtResource("1_ajvx3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1wvdm")
+animation = &"idle"
+frame_progress = 0.428124

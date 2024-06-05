@@ -57,3 +57,50 @@ func calculate_distances(
 				checked_nodes[vec2i_to_str(neighbor)] = true
 
 	return {"distance_map": distance_map, "inverse_distance_map": inverse_distance_map}
+
+
+func calculate_shortest_path(
+	start: Vector2i,
+	target: Vector2i,
+	get_neighbors_func: Callable,
+	calculate_distance_func: Callable
+) -> Array:
+	var distance_map = {}
+	var queue = PriorityQueue.new()
+	var came_from = {}  # Tracks where each node was reached from
+
+	# Initialize
+	queue.push(0, [start])  # Start with a path that only includes the starting point
+	distance_map[vec2i_to_str(start)] = 0
+	came_from[vec2i_to_str(start)] = null  # No preceding node for the start
+
+	while not queue.empty():
+		var current_path = queue.pop()
+		var current_node = current_path[-1]
+
+		# If the target is reached, reconstruct and return the path
+		if current_node == target:
+			return reconstruct_path(came_from, start, target)
+
+		# Process each neighbor
+		for neighbor in get_neighbors_func.call(current_node):
+			var new_path = current_path + [neighbor]
+			var new_distance = calculate_distance_func.call(new_path)
+
+			# Update if the neighbor has not been visited or found via a shorter path
+			if not distance_map.has(vec2i_to_str(neighbor)) or new_distance < distance_map[vec2i_to_str(neighbor)]:
+				queue.push(new_distance, new_path)
+				distance_map[vec2i_to_str(neighbor)] = new_distance
+				came_from[vec2i_to_str(neighbor)] = current_node
+
+	return []  # Return empty if no path is found
+
+# Helper method to reconstruct the path from start to target
+func reconstruct_path(came_from, start: Vector2i, target: Vector2i) -> Array:
+	var path = []
+	var current = target
+	while current != null:
+		path.append(current)
+		current = came_from[vec2i_to_str(current)]
+	path.reverse()  # Reverse to get the path from start to target
+	return path

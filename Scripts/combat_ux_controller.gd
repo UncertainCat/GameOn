@@ -15,11 +15,8 @@ func _process(_delta):
 		return
 	if not selected_unit:
 		return
-	if not combat_manager.action_requested(selected_unit):
-		return
 	var mouse_pos = get_global_mouse_position()
 	var cell = battle_map.to_cell(mouse_pos)
-	cell = Vector2i(floor(cell.x), floor(cell.y))
 	if not current_action:
 		command_controller.preview_card(selected_unit, default_action(selected_unit), cell)
 	else:
@@ -41,6 +38,8 @@ func _on_left_click():
 		if not clicked_unit == selected_unit:
 			select_unit(clicked_unit)
 	elif not selected_unit == null:
+		if command_controller.awaiting_movement and command_controller.actor == selected_unit:
+			command_controller.select_movement(selected_unit, cell)
 		if current_action == null:
 			command_controller.select_action(selected_unit, default_action(selected_unit), cell)
 		else:

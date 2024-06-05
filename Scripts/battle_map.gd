@@ -44,21 +44,20 @@ func _process(delta):
 func get_adjacent_cells(cell: Vector2i) -> Array[Vector2i]:
 	var adjacents: Array[Vector2i] = []
 	adjacents.append(Vector2i(cell.x - 1, cell.y))
+	adjacents.append(Vector2i(cell.x + 1, cell.y))
 	adjacents.append(Vector2i(cell.x, cell.y - 1))
 	adjacents.append(Vector2i(cell.x, cell.y + 1))
-	adjacents.append(Vector2i(cell.x + 1, cell.y))
+	adjacents.append(Vector2i(cell.x - 1, cell.y - 1))
+	adjacents.append(Vector2i(cell.x + 1, cell.y + 1))
+	adjacents.append(Vector2i(cell.x - 1, cell.y + 1))
+	adjacents.append(Vector2i(cell.x + 1, cell.y - 1))
 	return adjacents
 
 func highlight_tile(cell: Vector2i, opacity: float = 1.0):
 	snap_in_tiles(cell, opacity)
 
-	# Get adjacent cells for an isometric grid
-	var adjacent_cells: Array[Vector2i] = get_adjacent_cells(cell)
-	for adj_cell in adjacent_cells:
-		snap_in_tiles(adj_cell, 0.3)
-
 func snap_in_tiles(cell: Vector2i, opacity: float):
-	if tiles.find_key(cell):
+	if tiles.has(cell):
 		tiles.get(cell).snap_in(opacity)
 
 func _fade_out_tiles():
@@ -91,7 +90,7 @@ func get_spawn_points() -> SpawnPoints:
 		if not tilemap_source.has_node(npc_spawn_name):
 			break
 		var npc_spawn = tilemap_source.get_node(npc_spawn_name) as Marker2D
-		var spawn_point = [tilemap_source.local_to_map(npc_spawn.position)]
+		var spawn_point = tilemap_source.local_to_map(npc_spawn.position)
 		npc_spawn_points.append(spawn_point)
 		i += 1
 
@@ -102,6 +101,10 @@ func is_tile_impassable(cell: Vector2i) -> bool:
 	return tile_id == 1
 
 func add_actor(actor: Actor, position: Vector2i):
+	actors[actor] = position
+
+func move_actor_position(actor:Actor, position: Vector2i):
+	actors.erase(actor)
 	actors[actor] = position
 
 func remove_actor(actor: Actor):
@@ -138,16 +141,15 @@ func get_actors_in_emanation(center: Vector2i, size: Vector2i, radius: int) -> A
 			result.append(actor)
 	return result
 
-func get_shortest_path(start: Vector2i, target: Vector2i) -> Array[Vector2i]:
-	return get_simple_path(to_world(start), to_world(target)).map(to_cell)
-
-func get_simple_path(start: Vector2, target: Vector2) -> Array[Vector2]:
-	return [start, target]
+func get_shortest_walking_path(start: Vector2i, target: Vector2i) -> Array[Vector2i]:
+	return calculate_shortest_path(start, target, true)
 
 func get_walking_distance(target: Vector2i, path: Array[Vector2i], consider_terrain: bool = false) -> int:
-	var full_path = path + [target]
-	return calculate_step_distance(full_path, consider_terrain) - calculate_step_distance(path)
-
+	var initial =  calculate_step_distance(path, consider_terrain)
+	var full_path: Array[Vector2i] = path.duplicate()
+	full_path.append(target)
+	var final = calculate_step_distance(full_path, consider_terrain) 
+	return final - initial
 
 # Implements Pathfinder 2e diagonal rules by iterating through the path and counting diagonals
 func calculate_step_distance(path: Array[Vector2i], consider_terrain: bool = false) -> int:
@@ -212,6 +214,35 @@ func get_emanation(center: Vector2i, size: Vector2i, radius: int, consider_terra
 		if distance_map[pos] <= radius:
 			result.append(pos)
 	return result
+
+# Implement calculate_shortest_path to find path from start to target
+func calculate_shortest_path(
+	start: Vector2i,
+	target: Vector2i,
+	consider_terrain: bool = false
+) -> Array[Vector2i]:
+	var dijkstra = Dijkstra.new()
+	
+	# Define the get_neighbors function
+	var neighbor_fn = func (node: Vector2i) -> Array:
+		return get_adjacent_cells(node)
+	
+	# Define the calculate_distance function
+	var distance_fn = func (arrayPath: Array) -> int:
+		var path: Array[Vector2i] = []
+		for point in arrayPath:
+			if point is Vector2i:
+				path.append(point)
+			else:
+				path.append(Vector2i(point))
+		return calculate_step_distance(path, consider_terrain)
+	
+	# Calculate the shortest path using Dijkstra's algorithm
+	var nodes = dijkstra.calculate_shortest_path(start, target, neighbor_fn, distance_fn)
+	var path: Array[Vector2i]
+	for node in nodes:
+		path.append(node)
+	return path
 
 func calculate_distances(
 	start: Vector2i,

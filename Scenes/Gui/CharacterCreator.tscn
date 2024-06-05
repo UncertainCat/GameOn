@@ -1,0 +1,218 @@
+[gd_scene load_steps=5 format=3 uid="uid://cg01iko5c32km"]
+
+[ext_resource type="Texture2D" uid="uid://bvc5n81g4gqsc" path="res://Assets/rpg-gui-kit/RPG_GUI_v1_source_button.png" id="1_m43ux"]
+[ext_resource type="Texture2D" uid="uid://iif8ap5ofvcy" path="res://Assets/rpg-gui-kit/RPG_GUI_v1_source_button_pressed.png" id="2_8wala"]
+[ext_resource type="Texture2D" uid="uid://bloccfss1gf8d" path="res://Assets/rpg-gui-kit/RPG_GUI_v1_source_button_hover.png" id="3_fhj23"]
+[ext_resource type="Texture2D" uid="uid://su2x3pync7kf" path="res://Assets/rpg-gui-kit/paper background.png" id="4_f57dx"]
+
+[node name="Root" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 3853.0
+offset_bottom = 2219.0
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(1700, 270)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 180
+bbcode_enabled = true
+text = "[center]Character Creation[/center]"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_direction = 1
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel2" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.19
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.65
+
+[node name="Panel7" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(942, 172)
+layout_mode = 2
+texture_normal = ExtResource("1_m43ux")
+texture_pressed = ExtResource("2_8wala")
+texture_hover = ExtResource("3_fhj23")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer/TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.113
+anchor_top = 0.151
+anchor_right = 0.887
+anchor_bottom = 0.849
+offset_left = 10.77
+offset_top = 12.504
+offset_right = -6.77002
+offset_bottom = -11.504
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Class[/center]"
+
+[node name="CenterContainer2" type="CenterContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer2"]
+custom_minimum_size = Vector2(942, 172)
+layout_mode = 2
+texture_normal = ExtResource("1_m43ux")
+texture_pressed = ExtResource("2_8wala")
+texture_hover = ExtResource("3_fhj23")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer2/TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.113
+anchor_top = 0.151
+anchor_right = 0.887
+anchor_bottom = 0.849
+offset_left = 10.77
+offset_top = 12.504
+offset_right = -6.77002
+offset_bottom = -11.504
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Ancestry[/center]"
+
+[node name="CenterContainer3" type="CenterContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer3"]
+custom_minimum_size = Vector2(942, 172)
+layout_mode = 2
+texture_normal = ExtResource("1_m43ux")
+texture_pressed = ExtResource("2_8wala")
+texture_hover = ExtResource("3_fhj23")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer3/TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.113
+anchor_top = 0.151
+anchor_right = 0.887
+anchor_bottom = 0.849
+offset_left = 10.77
+offset_top = 12.504
+offset_right = -6.77002
+offset_bottom = -11.504
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Background[/center]"
+
+[node name="CenterContainer4" type="CenterContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer4"]
+custom_minimum_size = Vector2(942, 172)
+layout_mode = 2
+texture_normal = ExtResource("1_m43ux")
+texture_pressed = ExtResource("2_8wala")
+texture_hover = ExtResource("3_fhj23")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer4/TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.113
+anchor_top = 0.151
+anchor_right = 0.887
+anchor_bottom = 0.849
+offset_left = 10.77
+offset_top = 12.504
+offset_right = -6.77002
+offset_bottom = -11.504
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Abilities[/center]"
+
+[node name="CenterContainer5" type="CenterContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer5"]
+custom_minimum_size = Vector2(942, 172)
+layout_mode = 2
+texture_normal = ExtResource("1_m43ux")
+texture_pressed = ExtResource("2_8wala")
+texture_hover = ExtResource("3_fhj23")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/VBoxContainer/CenterContainer5/TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.113
+anchor_top = 0.151
+anchor_right = 0.887
+anchor_bottom = 0.849
+offset_left = 10.77
+offset_top = 12.504
+offset_right = -6.77002
+offset_bottom = -11.504
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Skills[/center]"
+
+[node name="Panel3" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -7
+layout_mode = 2
+offset_top = 6.0
+offset_right = 3853.0
+offset_bottom = 2219.0
+mouse_filter = 2
+texture = ExtResource("4_f57dx")

@@ -1,26 +1,27 @@
-[gd_scene load_steps=7 format=3 uid="uid://d4fostvgqitvv"]
+[gd_scene load_steps=8 format=3 uid="uid://d4fostvgqitvv"]
 
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
-[ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor.tscn" id="2_a8tnq"]
+[ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor1.tscn" id="2_a8tnq"]
 [ext_resource type="Script" path="res://Scripts/combat_ux_controller.gd" id="3_43qmq"]
 [ext_resource type="PackedScene" uid="uid://bk3cmwlyyrhl5" path="res://Scenes/Gui/InitiativeCarousel.tscn" id="4_mdk5x"]
+[ext_resource type="PackedScene" uid="uid://c7lpln1y3w06j" path="res://Scenes/actor2.tscn" id="5_ttvbs"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]
 script/source = "extends Node2D
 
 @onready var battle_map: BattleMap = $ExampleMap
-@onready var actor: Actor = $Actor
+@onready var actor1: Actor = $Actor1
+@onready var actor2: Actor = $Actor2
 
 func _ready():
 	
 	# Initialize the actor with the battle map
-	actor.name = \"PC1\"
+	actor1.name = \"PC1\"
+	actor2.name = \"PC2\"
 	
 	# Start the combat with this single actor as the PC
-	combat_manager.populate_combat(battle_map, [actor], [])
+	combat_manager.populate_combat(battle_map, [actor1, actor2], [])
 	combat_manager.start_combat()
-	# Log the actor's initial position
-	print(\"Actor spawned at position: %s\" % actor.global_position)
 "
 
 [sub_resource type="GDScript" id="GDScript_t3v8n"]
@@ -108,8 +109,6 @@ script = SubResource("GDScript_srgsc")
 
 [node name="ExampleMap" parent="." instance=ExtResource("1_gbcc2")]
 
-[node name="Actor" parent="." instance=ExtResource("2_a8tnq")]
-
 [node name="CombatUxController" type="Node2D" parent="."]
 script = ExtResource("3_43qmq")
 
@@ -119,3 +118,7 @@ script = ExtResource("3_43qmq")
 z_index = 20
 zoom = Vector2(4, 4)
 script = SubResource("GDScript_t3v8n")
+
+[node name="Actor1" parent="." instance=ExtResource("2_a8tnq")]
+
+[node name="Actor2" parent="." instance=ExtResource("5_ttvbs")]

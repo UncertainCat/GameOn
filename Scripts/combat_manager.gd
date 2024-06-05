@@ -27,9 +27,6 @@ func populate_combat(battle_map: BattleMap, pcs: Array[Node2D], npcs: Array[Node
 	if not _place_actors(battle_map, npcs, spawn_points.npc_spawn_points, "NPC"):
 		return
 
-func action_requested(actor: Actor):
-	pass
-
 # Helper method to place actors
 func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: Array[Vector2i], actor_type: String) -> bool:
 	if actors.size() > spawn_points.size():
@@ -45,10 +42,18 @@ func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: A
 
 # Method to get a unit at a specific grid position
 func get_unit_at(position: Vector2i) -> Node2D:
-	return current_battle_map.get_actors_in_square(position, position).front()
+	var actors = current_battle_map.get_actors_in_square(position, position)
+	if actors.is_empty():
+		return null
+	return actors.back()
 
-func get_unit_position(actor: Node2D) -> Vector2i:
-	return current_battle_map.get_actor_position(actor)
+func get_unit_position(cell: Node2D) -> Vector2i:
+	return current_battle_map.get_actor_position(cell)
+
+func move_unit_position(actor: Actor, from_cell: Vector2i, to_cell: Vector2i):
+	var moveActor = MoveActorGameEvent.new(actor, from_cell, to_cell)
+	game_event_queue.add_event(moveActor)
+	return current_battle_map.move_actor_position(actor, to_cell)
 
 # Custom sort function for initiative
 func _sort_by_initiative(a, b):
@@ -59,12 +64,11 @@ func process_steps(steps: Array[GameStep]):
 	current_steps = steps
 	while current_steps.size() > 0:
 		var step: GameStep = current_steps.pop_front()
-		var new_steps: Array[GameStep] = step.process(self)
 		# Notify listeners
 		if game_step_listeners.has(step.get_class()):
 			for listener in game_step_listeners[step.get_class()]:
 				process_steps(listener)
-
+		var new_steps: Array[GameStep] = await step.process(self)
 		# Insert new steps at the front of the queue
 		current_steps = new_steps + current_steps
 
@@ -94,7 +98,7 @@ func start_combat():
 				var action_steps: Array[GameStep] = next_action.game_steps
 				action_steps.push_front(action_start_step)
 				action_steps.push_back(action_end_step)
-				process_steps(action_steps)
+				await process_steps(action_steps)
 
 # Function to register a listener for a specific game step
 func register_game_step_listener(step_class: String, listener: Array[GameStep]):

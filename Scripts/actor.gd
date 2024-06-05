@@ -44,16 +44,14 @@ func _process(delta):
 func move_to_grid_position(new_grid_position: Vector2i):
 	target_grid_position = new_grid_position
 	is_moving = true
-	print("Moving to new grid position: %s" % target_grid_position)
 
 
 func _on_spawn_event(on_complete: Callable, event: SpawnActorGameEvent) -> void:
-	print("Player received on_spawn event")
 	var battle_map = combat_manager.current_battle_map
 	global_position = battle_map.to_world(event.cell)
+	on_complete.call()
 	
 func _on_move_event(on_complete: Callable, event: MoveActorGameEvent) -> void:
-	print("Player received move_player event")
 	complete_movement = on_complete
 	move_to_grid_position(event.to)
 

@@ -6,6 +6,7 @@ signal action_selected
 signal move_selected
 
 var current_path: Array[Vector2i] = []
+var walked_tiles: Array[Vector2i] = []
 var actor: Actor = null
 var awaiting_action: bool = false
 var action_result = null
@@ -18,6 +19,8 @@ var awaiting_movement: bool = false
 # The next_action method that waits for an action command
 func next_action(actor: Actor) -> Action:
 	print("Awaiting an action")
+	self.walked_tiles = []
+	self.current_path = []
 	self.actor = actor
 	awaiting_action = true
 	await action_selected
@@ -45,6 +48,7 @@ func preview_card(actor: Actor, action_card: ActionCard, preview_cell: Vector2i)
 
 # Method to build the action from the card
 func build_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i) -> Action:
+	print("Building an action for ", actor, " Action: ", action_card.action_name, " at: ", target_cell)
 	if action_card is StrideActionCard:
 		var actor_cell = combat_manager.get_unit_position(actor)
 		self.current_path = combat_manager.current_battle_map.get_shortest_walking_path(actor_cell, target_cell)
@@ -56,10 +60,13 @@ func build_card(actor: Actor, action_card: ActionCard, target_cell: Vector2i) ->
 
 # Preview the possible movement for stride actions
 func preview_stride_action(actor: Actor, target_cell: Vector2i, speed: int):
+	var map = combat_manager.current_battle_map
 	var mouse_position = get_global_mouse_position()
-	var mouse_cell = combat_manager.current_battle_map.to_cell(mouse_position)
-	var start_position = combat_manager.current_battle_map.get_actor_position(actor)
-	var possible_moves: Array[Vector2i] = combat_manager.current_battle_map.get_emanation(start_position, Vector2i.ZERO, speed, true)
+	var mouse_cell = map.to_cell(mouse_position)
+	var start_position = map.get_actor_position(actor)
+	
+	var possible_moves: Array[Vector2i] = map.get_emanation(start_position, Vector2i.ZERO, speed, true, walked_tiles)
+	
 	var highlighted_path = []
 	# Highlight all possible moves with a lower opacity
 	for move in possible_moves:
@@ -74,6 +81,7 @@ func preview_stride_action(actor: Actor, target_cell: Vector2i, speed: int):
 			combat_manager.current_battle_map.highlight_tile(cell, 1.0)
 
 	return highlighted_path
+
 
 # Preview the current path
 func preview_path():

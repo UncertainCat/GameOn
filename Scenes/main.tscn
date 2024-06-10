@@ -20,7 +20,7 @@ func _ready():
 	actor2.name = \"PC2\"
 	
 	# Start the combat with this single actor as the PC
-	combat_manager.populate_combat(battle_map, [actor1, actor2], [])
+	combat_manager.populate_combat(battle_map, [actor2, actor1], [])
 	combat_manager.start_combat()
 "
 
@@ -113,6 +113,7 @@ script = SubResource("GDScript_srgsc")
 script = ExtResource("3_43qmq")
 
 [node name="InitiativeCarousel" parent="CombatUxController" instance=ExtResource("4_mdk5x")]
+visible = false
 
 [node name="PlayerCam" type="Camera2D" parent="CombatUxController"]
 z_index = 20

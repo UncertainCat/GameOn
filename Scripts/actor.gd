@@ -42,18 +42,24 @@ func _process(delta):
 
 # Move to a new grid position
 func move_to_grid_position(new_grid_position: Vector2i):
+	print(self, " is moving to ", new_grid_position)
 	target_grid_position = new_grid_position
 	is_moving = true
 
 
 func _on_spawn_event(on_complete: Callable, event: SpawnActorGameEvent) -> void:
-	var battle_map = combat_manager.current_battle_map
-	global_position = battle_map.to_world(event.cell)
+	print(event, " has trigged a call on ", self)
+	if event.actor == self:
+		var battle_map = combat_manager.current_battle_map
+		global_position = battle_map.to_world(event.cell)
 	on_complete.call()
 	
 func _on_move_event(on_complete: Callable, event: MoveActorGameEvent) -> void:
-	complete_movement = on_complete
-	move_to_grid_position(event.to)
+	if event.actor == self:
+		complete_movement = on_complete
+		move_to_grid_position(event.to)
+	else:
+		on_complete.call()
 
 func can_walk() -> bool:
 	return true

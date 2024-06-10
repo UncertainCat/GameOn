@@ -1,3 +1,3 @@
-extends CommandController
+extends Node
 
 class_name WalkCommandController

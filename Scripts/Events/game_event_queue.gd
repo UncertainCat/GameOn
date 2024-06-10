@@ -27,6 +27,7 @@ func _init():
 func register_listener(event_type: String, callback: Callable):
 	if not listeners.has(event_type):
 		listeners[event_type] = []
+	print("registering:", event_type, " with: ", callback)
 	listeners[event_type].append(callback)
 
 # Add an event to the queue

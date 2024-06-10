@@ -35,6 +35,7 @@ func _place_actors(battle_map: BattleMap, actors: Array[Node2D], spawn_points: A
 	for i in range(actors.size()):
 		var actor = actors[i]
 		var spawn_point = spawn_points[i]
+		print("Placing actor: ", actor, " at: ", spawn_point)
 		game_event_queue.add_event(SpawnActorGameEvent.new(actor, spawn_point))
 		battle_map.add_actor(actor, spawn_point)
 		initiative_queue.append(actor)

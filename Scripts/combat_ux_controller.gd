@@ -36,6 +36,7 @@ func _on_left_click():
 	var clicked_unit = combat_manager.get_unit_at(cell)
 	if clicked_unit:
 		if not clicked_unit == selected_unit:
+			print("Unit selected: ", clicked_unit, " at: ", cell)
 			select_unit(clicked_unit)
 	elif not selected_unit == null:
 		if command_controller.awaiting_movement and command_controller.actor == selected_unit:

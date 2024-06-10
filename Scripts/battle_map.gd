@@ -173,8 +173,9 @@ func calculate_step_distance(path: Array[Vector2i], consider_terrain: bool = fal
 		elif (dx == 1 and dy == 0) or (dx == 0 and dy == 1):
 			step_distance = 1
 		else:
-			# If the movement is neither rectilinear nor valid diagonal
-			return -1
+			# If the movement is neither rectilinear nor valid diagonal, raise an error
+			push_error("Invalid movement from (%d, %d) to (%d, %d): the step is neither rectilinear nor a valid diagonal. Path: %s"
+					   % [current.x, current.y, next.x, next.y, path])
 		
 		if consider_terrain and step_distance > 0:
 			step_distance *= get_tile_cost(next)
@@ -182,6 +183,7 @@ func calculate_step_distance(path: Array[Vector2i], consider_terrain: bool = fal
 		distance += step_distance
 
 	return distance
+
 
 
 func get_tile_cost(cell: Vector2i) -> int:
@@ -206,9 +208,10 @@ func get_actors_in_area(center: Vector2i, size: Vector2i, area: Array[Vector2i])
 				break
 	return result
 
-func get_emanation(center: Vector2i, size: Vector2i, radius: int, consider_terrain: bool = false) -> Array[Vector2i]:
+func get_emanation(center: Vector2i, size: Vector2i, radius: int, consider_terrain: bool = false, from_path: Array[Vector2i] = []) -> Array[Vector2i]:
 	var result: Array[Vector2i] = []
-	var distance_data = calculate_distances(center, radius, size, consider_terrain)
+	from_path.append(center)
+	var distance_data = calculate_distances_from_path(from_path, radius, size, consider_terrain)
 	var distance_map = distance_data["distance_map"]
 	for pos in distance_map.keys():
 		if distance_map[pos] <= radius:
@@ -250,33 +253,41 @@ func calculate_distances(
 	footprint: Vector2i = Vector2i(0, 0),
 	consider_terrain: bool = false
 ) -> Dictionary:
+	var startPath: Array[Vector2i] = []
+	startPath.append(start)
+	return calculate_distances_from_path(startPath, max_distance, footprint, consider_terrain)
+	
+func calculate_distances_from_path(
+	start: Array[Vector2i],
+	max_distance: int = 10,
+	footprint: Vector2i = Vector2i(0, 0),
+	consider_terrain: bool = false
+) -> Dictionary:
+	start = start.duplicate()
 	# Check cache first
 	var cache_key = str(start) + "_" + str(max_distance) + "_" + str(footprint) + "_" + str(consider_terrain)
 	if distance_cache.has(cache_key):
 		return distance_cache[cache_key]
+	var start_pos = start.front()
 
 	# Get initial positions based on the footprint
-	var initial_positions = get_initial_positions(start, footprint)
+	var initial_positions = get_initial_positions(start_pos, footprint)
 
 	# Define the get_neighbors function
 	var neighbor_fn = func get_neighbors(node: Vector2i) -> Array:
 		return get_adjacent_cells(node)  # Implement this method based on your requirements
-
 	# Define the calculate_distance function
 	var distance_fn = func calculate_distance(arrayPath: Array) -> int:
 	# Convert each element in the path array to Vector2i if it is not already
-		var path: Array[Vector2i] = []
+		var path: Array[Vector2i] = start.duplicate()
 		for point in arrayPath:
-			if point is Vector2i:
-				path.append(point)
-			else:
-				path.append(Vector2i(point))
+			path.append(Vector2i(point))
 		return calculate_step_distance(path, consider_terrain)
 
 
 	# Create an instance of Dijkstra class and calculate distances
 	var dijkstra = Dijkstra.new()
-	var result = dijkstra.calculate_distances(start, max_distance, initial_positions, neighbor_fn, distance_fn)
+	var result = dijkstra.calculate_distances(start_pos, max_distance, initial_positions, neighbor_fn, distance_fn)
 	# Cache the result
 	distance_cache[cache_key] = result
 

@@ -39,12 +39,7 @@ func _on_left_click():
 			print("Unit selected: ", clicked_unit, " at: ", cell)
 			select_unit(clicked_unit)
 	elif not selected_unit == null:
-		if command_controller.awaiting_movement and command_controller.actor == selected_unit:
-			command_controller.select_movement(selected_unit, cell)
-		if current_action == null:
-			command_controller.select_action(selected_unit, default_action(selected_unit), cell)
-		else:
-			command_controller.select_action(selected_unit, current_action, cell)
+		command_controller.process_command(selected_unit, cell)
 
 func select_unit(unit):
 	selected_unit = unit

@@ -36,4 +36,3 @@ func process(combat_manager: CombatManager) -> Array[GameStep]:
 	if next_steps:
 		next_steps.append(WalkStep.new(new_path, actor, distance_walked))
 	return next_steps
-

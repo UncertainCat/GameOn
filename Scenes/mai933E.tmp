@@ -1,10 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4fostvgqitvv"]
+[gd_scene load_steps=8 format=3 uid="uid://d4fostvgqitvv"]
 
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
 [ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor1.tscn" id="2_a8tnq"]
 [ext_resource type="Script" path="res://Scripts/combat_ux_controller.gd" id="3_43qmq"]
 [ext_resource type="PackedScene" uid="uid://bk3cmwlyyrhl5" path="res://Scenes/Gui/InitiativeCarousel.tscn" id="4_mdk5x"]
-[ext_resource type="Script" path="res://Scripts/actor.gd" id="5_is3e8"]
 [ext_resource type="PackedScene" uid="uid://c7lpln1y3w06j" path="res://Scenes/actor2.tscn" id="5_ttvbs"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]
@@ -110,7 +109,9 @@ script = SubResource("GDScript_srgsc")
 
 [node name="ExampleMap" parent="." instance=ExtResource("1_gbcc2")]
 
-[node name="CombatUxController" type="Node2D" parent="."]
+[node name="CombatUxController" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("3_43qmq")
 
 [node name="InitiativeCarousel" parent="CombatUxController" instance=ExtResource("4_mdk5x")]
@@ -122,6 +123,6 @@ zoom = Vector2(4, 4)
 script = SubResource("GDScript_t3v8n")
 
 [node name="Actor1" parent="." instance=ExtResource("2_a8tnq")]
-script = ExtResource("5_is3e8")
+script = null
 
 [node name="Actor2" parent="." instance=ExtResource("5_ttvbs")]

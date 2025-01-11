@@ -63,6 +63,7 @@ func _on_walk_completed(action: Action):
 func select_movement(actor: Actor, target_cell: Vector2i):
 	# Handle new movement selection
 	var action_card = StrideActionCard.new()
+	print("staring walk")
 	var action = walk_controller.start_walk(actor, action_card, target_cell)
 	return action
 

@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://dfl2ipi1d8ha4" path="res://Scenes/Maps/ExampleMap/example_map.tscn" id="1_gbcc2"]
 [ext_resource type="PackedScene" uid="uid://r6ax4v5r7y8r" path="res://Scenes/actor1.tscn" id="2_a8tnq"]
-[ext_resource type="Script" path="res://Scripts/combat_ux_controller.gd" id="3_43qmq"]
+[ext_resource type="Script" uid="uid://ctjcefum8lhg6" path="res://Scripts/combat_ux_controller.gd" id="3_43qmq"]
 [ext_resource type="PackedScene" uid="uid://bk3cmwlyyrhl5" path="res://Scenes/Gui/InitiativeCarousel.tscn" id="4_mdk5x"]
-[ext_resource type="Script" path="res://Scripts/actor.gd" id="5_is3e8"]
+[ext_resource type="Script" uid="uid://b68bv300nclxa" path="res://Scripts/actor.gd" id="5_is3e8"]
 [ext_resource type="PackedScene" uid="uid://c7lpln1y3w06j" path="res://Scenes/actor2.tscn" id="5_ttvbs"]
 
 [sub_resource type="GDScript" id="GDScript_srgsc"]

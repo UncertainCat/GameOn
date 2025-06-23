@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dxsi6l1c3efug"]
 
-[ext_resource type="Script" path="res://Scripts/UI/actor_panel.gd" id="1_jpobv"]
+[ext_resource type="Script" uid="uid://1pw4uqn11p86" path="res://Scripts/UI/actor_panel.gd" id="1_jpobv"]
 
 [node name="ActorPanel" type="Panel"]
 script = ExtResource("1_jpobv")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bk3cmwlyyrhl5"]
 
-[ext_resource type="Script" path="res://Scripts/UI/initiative_carousel.gd" id="1"]
+[ext_resource type="Script" uid="uid://cjig32gb0f7cm" path="res://Scripts/UI/initiative_carousel.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://dxsi6l1c3efug" path="res://Scenes/Gui/ActorPanel.tscn" id="2"]
 
 [node name="InitiativeCarousel" type="Control"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bponb8fyxbekl"]
 
 [ext_resource type="Texture2D" uid="uid://ndt6hdmtjsks" path="res://Assets/Graphics/simple_iso_square.png" id="1_wkkm7"]
-[ext_resource type="Script" path="res://Scripts/tile_map_loader.gd" id="2_vydel"]
+[ext_resource type="Script" uid="uid://y2o6lwajjqug" path="res://Scripts/tile_map_loader.gd" id="2_vydel"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v5hsh"]
 texture = ExtResource("1_wkkm7")
